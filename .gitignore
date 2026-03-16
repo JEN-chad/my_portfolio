@@ -1,0 +1,78 @@
+# Dependency directories
+
+node_modules/
+jspm_packages/
+
+# Logs
+
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Runtime data
+
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Coverage directory
+
+coverage/
+*.lcov
+
+# Build output
+
+dist/
+build/
+.next/
+out/
+
+# Environment variables
+
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Cache directories
+
+.cache/
+.parcel-cache/
+.npm
+.eslintcache
+
+# OS files
+
+.DS_Store
+Thumbs.db
+
+# IDE / Editor folders
+
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+# Temporary files
+
+tmp/
+temp/
+
+# Optional npm cache directory
+
+.npm/
+
+# Optional eslint cache
+
+.eslintcache
+
+# Optional REPL history
+
+.node_repl_history
