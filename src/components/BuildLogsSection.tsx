@@ -1,361 +1,507 @@
-import { motion, useMotionValue, useMotionTemplate } from "framer-motion";
-import { MouseEvent, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { useState, useEffect } from "react";
+import InteractiveTerminal from "./InteractiveTerminal";
+import VaultSandbox from "./VaultSandbox";
+
+interface Project {
+  id: string;
+  title: string;
+  subtitle: string;
+  description: string;
+  category: "ai" | "web" | "tooling";
+  type: "monitor" | "sandbox" | "dossier";
+  metrics: string[];
+  stack: string[];
+  codeUrl: string;
+  demoUrl: string;
+  colorClass: string;
+}
 
 const fadeIn = {
-  initial: { opacity: 0, y: 20 },
+  initial: { opacity: 0, y: 15 },
   whileInView: { opacity: 1, y: 0 },
   viewport: { once: true },
   transition: { duration: 0.5 },
 };
 
 const BuildLogsSection = () => {
-  const mouseX = useMotionValue(0);
-  const mouseY = useMotionValue(0);
-  const [hoveredCommit, setHoveredCommit] = useState<string | null>(null);
+  const [selectedId, setSelectedId] = useState<string>("hiremind");
+  const [hoveredId, setHoveredId] = useState<string | null>(null);
+  const [viewedIds, setViewedIds] = useState<string[]>(["hiremind"]);
+  const [isMobile, setIsMobile] = useState(false);
 
-  function handleMouseMove({ currentTarget, clientX, clientY }: MouseEvent) {
-    const { left, top } = currentTarget.getBoundingClientRect();
-    mouseX.set(clientX - left);
-    mouseY.set(clientY - top);
-  }
+  // Monitor screen size for grid layout
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 768);
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  const projects: Project[] = [
+    {
+      id: "hiremind",
+      title: "HireMindAI",
+      subtitle: "AI-Native Recruitment Operating System",
+      description: "Next-gen applicant tracking platform streamlining candidate pipelines through automated indexing and Google Gemini evaluations.",
+      category: "ai",
+      type: "dossier",
+      colorClass: "bg-[#fcfbe3] text-slate-800 border-l-[#d35442]",
+      metrics: [
+        "Automates up to 95% of the screening lifecycle",
+        "Reduces manual recruiter hours by over 80%",
+        "Standardizes candidate technical/behavioral scoring",
+        "Authenticates resumes through background validation layers"
+      ],
+      stack: ["Next.js", "Drizzle ORM", "Neon Postgres", "Google Gemini", "Vertex AI", "Resend"],
+      codeUrl: "#",
+      demoUrl: "#"
+    },
+    {
+      id: "codesentry",
+      title: "codesentry",
+      subtitle: "AI-Generated Code Security CLI Scanner",
+      description: "A real-time command line vulnerability scanner catching vulnerabilities and credentials before they commit.",
+      category: "tooling",
+      type: "monitor",
+      colorClass: "bg-[#e2cfb6] border-l-slate-800",
+      metrics: [
+        "Completes commit code scans in under 0.4 seconds",
+        "Flags hardcoded keys, SQLi, and unsafe deserializations",
+        "Bypasses heavy dependencies using pure-Python rules",
+        "Generates drop-in AI prompts for ChatGPT/Claude fixes"
+      ],
+      stack: ["Python", "FastAPI", "CLI", "Static Analysis", "AI prompting"],
+      codeUrl: "#",
+      demoUrl: "#"
+    },
+    {
+      id: "oncoenv",
+      title: "OncoEnv",
+      subtitle: "Bioinformatics RL Agent Environment",
+      description: "A procedural biological world state generator designed to train and benchmark autonomous science LLM agents.",
+      category: "ai",
+      type: "dossier",
+      colorClass: "bg-[#fcfbe3] text-slate-800 border-l-[#a259ff]",
+      metrics: [
+        "Simulates scRNA-seq count matrices & regulatory networks",
+        "Features 40+ simulated tools (QC, clustering, markers)",
+        "Implements dense stepwise biological reward functions",
+        "Enables hyper-fast training loops built on numpy/scipy"
+      ],
+      stack: ["Python", "FastAPI", "Uvicorn", "Pydantic", "NumPy", "SciPy", "OpenEnv"],
+      codeUrl: "#",
+      demoUrl: "#"
+    },
+    {
+      id: "vault",
+      title: "Crack The Vault",
+      subtitle: "LLM Prompt Injection Security Game",
+      description: "Interactive cyberpunk sandbox challenging players to trick an AI guard into releasing college symposium funds.",
+      category: "ai",
+      type: "sandbox",
+      colorClass: "bg-[#fdf9d8] border-l-[#a259ff]",
+      metrics: [
+        "Leverages a dynamic safety threshold rising as players win",
+        "Features real-time policy engine scoring & injection guards",
+        "Includes a fully populated 3D admin monitor dashboard",
+        "Ensures complete prompt safety isolation via isolated gateways"
+      ],
+      stack: ["FastAPI", "Next.js", "Expo Mobile", "Drizzle ORM", "Neon Postgres", "Docker"],
+      codeUrl: "#",
+      demoUrl: "#"
+    },
+    {
+      id: "devflow",
+      title: "DevFlow",
+      subtitle: "GitHub Integrated Sprint Workspace",
+      description: "SaaS project manager merging Agile boards with real-time GitHub webhook sync loops.",
+      category: "web",
+      type: "dossier",
+      colorClass: "bg-[#fcfbe3] text-slate-800 border-l-[#88c5f7]",
+      metrics: [
+        "Syncs commits, PRs, and issues directly to board tickets",
+        "Maintains multi-client rooms using Socket.io synchronization",
+        "Provides sprint burndown velocity and cycle time tracking",
+        "Features a buttery-smooth drag-and-drop kanban grid"
+      ],
+      stack: ["MongoDB", "Express", "React", "Node.js", "Socket.io", "Tailwind CSS"],
+      codeUrl: "#",
+      demoUrl: "#"
+    },
+    {
+      id: "collabboard",
+      title: "CollabBoard",
+      subtitle: "Real-Time Kanban Workspace",
+      description: "Real-time task board built with optimistic client updates and conflict resolution protocols.",
+      category: "web",
+      type: "dossier",
+      colorClass: "bg-[#f5f1e1] text-slate-800 border-l-[#88c5f7]",
+      metrics: [
+        "Maintains real-time board collaboration over WebSockets",
+        "Handles write collisions through version conflict checkers",
+        "Features optimistic updates on clients for near-zero lag",
+        "Includes user audit logs detailing historical board events"
+      ],
+      stack: ["React", "Vite", "Tailwind CSS", "Socket.io", "Express", "MongoDB"],
+      codeUrl: "#",
+      demoUrl: "#"
+    },
+    {
+      id: "supportdesk",
+      title: "SupportDesk",
+      subtitle: "Multi-Tenant Support Ticketing Platform",
+      description: "Enterprise Zendesk clone featuring strict query-level customer workspace isolation.",
+      category: "web",
+      type: "dossier",
+      colorClass: "bg-[#fcfbe3] text-slate-800 border-l-[#88c5f7]",
+      metrics: [
+        "Guarantees multi-tenant database isolation boundaries",
+        "Supports workspace invitations and collaborative tickets",
+        "Displays real-time support team performance analytics",
+        "Maintains swift UI states using TanStack Query caching"
+      ],
+      stack: ["React", "Tailwind CSS", "React Query", "Node.js", "Express", "MongoDB"],
+      codeUrl: "#",
+      demoUrl: "#"
+    }
+  ];
+
+  const handleSelectProject = (id: string) => {
+    setSelectedId(id);
+    if (!viewedIds.includes(id)) {
+      setViewedIds((prev) => [...prev, id]);
+    }
+  };
+
+  const selectedProject = projects.find((p) => p.id === selectedId) || projects[0];
 
   return (
-    <section 
-      id="work" 
-      className="bg-circuit-pattern relative py-20 pb-40 group"
-      onMouseMove={handleMouseMove}
-    >
-      {/* Interactive subtle grid brighten effect */}
-      <motion.div
-        className="pointer-events-none absolute inset-0 z-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
-        style={{
-          background: useMotionTemplate`
-            radial-gradient(
-              400px circle at ${mouseX}px ${mouseY}px,
-              rgba(255,255,255,0.04),
-              transparent 80%
-            )
-          `,
-        }}
-      />
-      {/* Decorative side elements - hidden on mobile */}
-      <div className="absolute left-4 top-1/4 opacity-50 flex-col gap-12 pointer-events-none hidden lg:flex">
-        <div className="text-foreground border-2 border-foreground rounded px-2 py-1 font-mono text-sm">
-          <span className="mr-1">o o o</span><br />
-          &gt;_
-        </div>
-      </div>
-      <div className="absolute right-8 top-1/3 opacity-50 flex-col gap-16 pointer-events-none hidden lg:flex">
-        <div className="text-foreground text-3xl font-mono border border-foreground p-2 rounded-md">
-          &lt;/&gt;
-        </div>
+    <section id="work" className="bg-[#1e1a17] py-28 relative overflow-hidden">
+      
+      {/* Background doodles */}
+      <div className="absolute inset-0 pointer-events-none z-0 opacity-15 overflow-hidden hidden md:block">
+        <div className="absolute top-[10%] left-[8%] rotate-[12deg] text-cream-light font-mono text-2xl">&lt;/&gt;</div>
+        <div className="absolute bottom-[15%] right-[5%] -rotate-[15deg] text-cream-light font-mono text-2xl">git commit -m "build"</div>
       </div>
 
-      <div className="container mx-auto px-4 relative z-10 max-w-6xl">
+      <div className="container mx-auto px-4 max-w-6xl relative z-10">
+        
         {/* Header */}
-        <motion.header {...fadeIn} className="text-center mb-16 relative">
-          <h1 className="text-5xl sm:text-6xl md:text-8xl font-serif font-bold text-cream-light mb-2 tracking-wide drop-shadow-lg">
+        <motion.header {...fadeIn} className="text-center mb-20">
+          <h1 className="text-5xl sm:text-6xl md:text-8xl font-serif font-bold text-cream-light mb-4 tracking-wide drop-shadow-lg">
             Build Logs
           </h1>
-          <p className="text-xl sm:text-2xl md:text-3xl font-hand-kalam text-cream-light/90 tracking-wider">
-            things ive built while exploring code
+          <p className="text-xl sm:text-2xl md:text-3xl font-hand-kalam text-[#d35442] tracking-wider">
+            7 actual projects, documented & live
           </p>
         </motion.header>
 
-        {/* Cards - stacked on mobile, absolute on desktop */}
-        <div className="relative min-h-[1200px] md:min-h-[1100px] lg:h-[1300px] w-full max-w-5xl mx-auto mt-12 flex flex-col gap-10 md:block">
+        {/* ================= DOUBLE PAGE BINDER CONTAINER ================= */}
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-8 lg:gap-12 relative">
           
-          {/* Background Git Timeline - hidden on mobile */}
-          <div className="absolute top-[45%] left-0 w-full z-0 hidden md:block opacity-60 pointer-events-none">
-            <div className="w-full h-[1px] bg-slate-400/50 relative">
-              {[
-                { id: 'fullstack', left: '8%' },
-                { id: 'recruiter', left: '20%' },
-                { id: 'resume', left: '40%' },
-                { id: 'web3', left: '55%' },
-                { id: '2am', left: '62%' },
-                { id: 'cli', left: '68%' },
-                { id: 'n8n', left: '85%' },
-              ].map(commit => (
+          {/* ================= LEFT PAGE: Spiral Project Index ================= */}
+          <div className="md:col-span-5 lg:col-span-4 relative">
+            <motion.div
+              {...fadeIn}
+              className="bg-[#fcf9d6] border-l-[12px] border-notebook-border/80 rounded-r-2xl shadow-layered p-6 sm:p-8 relative paper-texture transition-transform duration-300 md:-rotate-1 h-full min-h-[500px]"
+            >
+              {/* Spiral Rings Overlay */}
+              <div className="absolute left-[-16px] top-0 bottom-0 w-8 flex flex-col justify-around py-6 z-20 pointer-events-none select-none">
+                {Array.from({ length: 14 }).map((_, i) => (
+                  <div key={i} className="w-5 h-2.5 rounded-full bg-slate-700 border-b-2 border-slate-900 shadow-md" />
+                ))}
+              </div>
+
+              {/* Red Legal Pad Margin Line */}
+              <div className="absolute left-8 top-0 bottom-0 w-[1.5px] bg-[#d35442]/30" />
+
+              {/* Title */}
+              <h2 className="text-4xl font-marker text-[#d35442] mb-8 border-b-2 border-dashed border-[#d35442]/20 pb-3 pl-6 select-none">
+                project index
+              </h2>
+
+              {/* Index List */}
+              <ul className="space-y-3 font-hand-kalam text-xl pl-6">
+                {projects.map((project, idx) => {
+                  const isSelected = selectedId === project.id;
+                  const isViewed = viewedIds.includes(project.id);
+                  return (
+                    <li
+                      key={project.id}
+                      className="relative p-2.5 rounded transition-all duration-200 cursor-pointer select-none z-10 flex items-center gap-3"
+                      onMouseEnter={() => setHoveredId(project.id)}
+                      onMouseLeave={() => setHoveredId(null)}
+                      onClick={() => handleSelectProject(project.id)}
+                    >
+                      {/* Highlighter overlay on hover */}
+                      <AnimatePresence>
+                        {hoveredId === project.id && (
+                          <motion.div
+                            layoutId="highlighter"
+                            className="absolute inset-0 bg-yellow-300/40 rounded-sm -z-10 transform -rotate-1 skew-x-3 pointer-events-none"
+                            transition={{ type: "spring", stiffness: 250, damping: 20 }}
+                          />
+                        )}
+                      </AnimatePresence>
+
+                      {/* Custom checklist circles */}
+                      <div className="w-6 h-6 rounded-full border-2 border-[#d35442] flex items-center justify-center bg-white/60 shrink-0 relative">
+                        <AnimatePresence>
+                          {isViewed && (
+                            <motion.span
+                              initial={{ scale: 0, rotate: -20 }}
+                              animate={{ scale: 1.1, rotate: 0 }}
+                              exit={{ scale: 0 }}
+                              className="text-[#d35442] font-bold text-sm leading-none"
+                            >
+                              ✓
+                            </motion.span>
+                          )}
+                        </AnimatePresence>
+                      </div>
+
+                      {/* Project Link text */}
+                      <span
+                        className={`transition-colors duration-150 leading-none ${
+                          isSelected ? "text-slate-900 font-bold border-b border-slate-900/60 pb-0.5" : "text-slate-700/80 hover:text-slate-900"
+                        }`}
+                      >
+                        {idx + 1}. {project.title}
+                      </span>
+                    </li>
+                  );
+                })}
+              </ul>
+
+              {/* Lined Paper Lines overlay */}
+              <div className="absolute inset-0 lined-paper-bg opacity-[0.04] pointer-events-none rounded-r-2xl" />
+            </motion.div>
+          </div>
+
+          {/* ================= RIGHT PAGE: Active Desktop Workspace ================= */}
+          <div className="md:col-span-7 lg:col-span-8 relative min-h-[580px]">
+            
+            {/* Desktop dossier view */}
+            {!isMobile ? (
+              <AnimatePresence mode="wait">
                 <motion.div
-                  key={commit.id}
-                  initial={false}
-                  animate={{
-                    scale: hoveredCommit === commit.id ? 2.5 : 1,
-                    backgroundColor: hoveredCommit === commit.id ? '#10b981' : '#94a3b8',
-                    boxShadow: hoveredCommit === commit.id ? '0 0 10px rgba(16, 185, 129, 0.4)' : 'none'
+                  key={selectedProject.id}
+                  initial={{ opacity: 0, scale: 0.96, rotate: 2 }}
+                  animate={{ 
+                    opacity: 1, 
+                    scale: 1, 
+                    rotate: selectedProject.type === "monitor" ? 0 : 1,
+                    transition: { type: "spring", stiffness: 200, damping: 18 } 
                   }}
-                  className="absolute top-1/2 -translate-y-1/2 w-[6px] h-[6px] rounded-full"
-                  style={{ left: commit.left }}
-                />
-              ))}
-            </div>
-          </div>
-          
-          {/* FEATURED: AI Recruiter */}
-          <motion.div
-            {...fadeIn}
-            transition={{ delay: 0.1 }}
-            whileHover={{ y: -8, boxShadow: "0 25px 50px -12px rgba(0,0,0,0.5)", rotate: -1.5, zIndex: 50 }}
-            className="md:absolute md:left-10 md:top-10 w-full max-w-[450px] mx-auto md:mx-0 md:-rotate-3 z-10 transition-colors duration-300 float-slow-1"
-            onMouseEnter={() => setHoveredCommit('recruiter')}
-            onMouseLeave={() => setHoveredCommit(null)}
-          >
-            <div className="bg-paper-bg p-6 rounded-sm shadow-layered border border-gray-300 relative">
-              <div className="tape absolute -top-4 -left-4 w-16 h-6 -rotate-45 z-20" />
-              <div className="tape absolute -bottom-4 right-10 w-20 h-6 rotate-12 z-20" />
-              <h2 className="text-2xl font-mono text-card-foreground font-bold mb-4">AI Recruiter</h2>
-              <div className="bg-terminal-bg rounded p-4 font-mono text-sm leading-relaxed mb-4 shadow-inner">
-                <p><span className="text-terminal-green">bash-shell:~$</span> <span className="text-cream-light">python ai_recruiter.py</span></p>
-                <br />
-                <p className="text-muted-foreground">Stack:</p>
-                <p className="text-cream-light pl-2 border-l-2 border-muted-foreground/30 mt-1">Python • TensorFlow • NLP • Flask</p>
-                <br />
-                <p className="text-muted-foreground">Live:</p>
-                <a href="#" className="text-terminal-green hover:underline flex items-center mt-1">
-                  View Project <span className="ml-1">&rarr;</span>
-                </a>
-              </div>
-            </div>
-          </motion.div>
-
-          {/* FEATURED: Retro Monitor n8n */}
-          <motion.div
-            {...fadeIn}
-            transition={{ delay: 0.2 }}
-            whileHover={{ y: -8, boxShadow: "0 25px 50px -12px rgba(0,0,0,0.5)", rotate: 1, zIndex: 50 }}
-            className="md:absolute md:right-10 md:top-0 w-full max-w-[480px] mx-auto md:mx-0 md:rotate-2 z-20 transition-colors duration-300 float-slow-2"
-            onMouseEnter={() => setHoveredCommit('n8n')}
-            onMouseLeave={() => setHoveredCommit(null)}
-          >
-            <div className="bg-monitor-bezel p-6 rounded-xl retro-monitor-shadow relative border-b-8 border-r-8 border-gray-500">
-              <div className="bg-terminal-bg rounded-lg p-5 h-[340px] relative overflow-hidden border-4 border-gray-800 shadow-inner">
-                <div className="screen-glare absolute inset-0 z-10 pointer-events-none" />
-                <div className="font-mono text-sm relative z-20 flex flex-col h-full">
-                  <div className="flex-1 space-y-4">
-                    <p className="text-terminal-green font-bold text-lg mb-4 border-b border-terminal-green/30 pb-2">
-                      Project: n8n Automation Lab
-                    </p>
-                    <p>
-                      <span className="text-terminal-green">const</span> <span className="text-cream-light">n8n = require(</span><span className="text-green-300">"n8n-core"</span><span className="text-cream-light">)</span>
-                    </p>
-                    <div className="mt-4">
-                      <p className="text-muted-foreground">Stack:</p>
-                      <p className="text-cream-light mt-1">n8n • Node.js • PostgreSQL • Webhooks</p>
+                  exit={{ opacity: 0, scale: 0.96, rotate: -2, transition: { duration: 0.2 } }}
+                  className="w-full relative z-10"
+                >
+                  
+                  {/* MONITOR TYPE: codesentry CLI scan */}
+                  {selectedProject.type === "monitor" && (
+                    <div className="bg-monitor-bezel p-6 sm:p-8 rounded-2xl shadow-layered border-b-[10px] border-r-[10px] border-slate-600 relative overflow-hidden transition-all duration-300 w-full max-w-[620px] mx-auto">
+                      <div className="bg-terminal-bg rounded-lg p-5 h-[390px] relative overflow-hidden border-4 border-slate-800 shadow-inner">
+                        <div className="screen-glare absolute inset-0 z-10 pointer-events-none" />
+                        <div className="relative z-20 flex flex-col h-full">
+                          <InteractiveTerminal />
+                        </div>
+                      </div>
+                      <div className="absolute bottom-[84px] right-8 w-10 h-1.5 bg-green-500 rounded-full shadow-[0_0_8px_#22c55e]" />
+                      <div className="absolute top-1 right-8 font-mono text-[9px] text-slate-500 uppercase select-none">CRT MONITOR v1.0</div>
+                      
+                      {/* Tech Stack below the screen */}
+                      <div className="mt-4 pt-3 border-t border-slate-500/30">
+                        <p className="font-mono text-xs text-slate-200 font-bold mb-2 select-none">🛠 Tech Stack:</p>
+                        <div className="flex flex-wrap gap-2">
+                          {selectedProject.stack.map((tag) => (
+                            <span key={tag} className="text-xs text-[#4ade80] bg-slate-800 px-2.5 py-1 rounded shadow-sm font-mono border border-slate-700 hover:scale-102 transition-transform">
+                              {tag}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                  <div className="mt-auto">
-                    <p className="text-muted-foreground">Live:</p>
-                    <a href="#" className="text-terminal-green hover:underline flex items-center mt-1 text-base">
-                      Open Project <span className="ml-1">&rarr;</span>
-                    </a>
-                  </div>
-                </div>
+                  )}
+
+                  {/* SANDBOX TYPE: Crack The Vault Prompt injection game */}
+                  {selectedProject.type === "sandbox" && (
+                    <div className="bg-[#f0e6d2] border-[10px] border-[#d35442]/80 rounded-2xl shadow-layered p-6 relative paper-texture w-full max-w-[620px] mx-auto">
+                      <div className="tape absolute -top-4 -left-4 w-16 h-6 -rotate-45 z-20" />
+                      <div className="tape absolute -bottom-4 right-12 w-20 h-6 rotate-12 z-20" />
+                      
+                      <h3 className="text-3xl font-marker text-[#d35442] mb-1">{selectedProject.title}</h3>
+                      <p className="font-hand-kalam text-lg text-slate-600 mb-4">{selectedProject.subtitle}</p>
+
+                      <div className="mb-4">
+                        <VaultSandbox />
+                      </div>
+
+                      {/* Stack details */}
+                      <div className="mt-5">
+                        <p className="font-hand-kalam text-base text-slate-800 font-bold mb-2 select-none">🛠 Tech Stack:</p>
+                        <div className="flex flex-wrap gap-2">
+                          {selectedProject.stack.map((tag) => (
+                            <span key={tag} className="text-xs text-slate-800 bg-[#e7d7c1] px-2.5 py-1.5 rounded shadow-sm font-hand-kalam border border-black/10 hover:scale-102 transition-transform">
+                              {tag}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* DOSSIER TYPE: Standard beautiful binder folder */}
+                  {selectedProject.type === "dossier" && (
+                    <div className="bg-[#fcfbe3] border-l-[16px] border-l-[#d35442] rounded-r-2xl shadow-layered p-8 relative paper-texture w-full max-w-[620px] mx-auto min-h-[500px]">
+                      {/* Tape detailing */}
+                      <div className="tape absolute -top-4 -left-4 w-16 h-6 -rotate-45 z-20" />
+                      <div className="tape absolute -bottom-4 right-12 w-20 h-6 rotate-12 z-20" />
+                      
+                      {/* Document Clip */}
+                      <div className="absolute -top-4 left-1/3 text-3xl z-30 select-none" style={{ filter: 'drop-shadow(1px 2px 2px rgba(0,0,0,0.15))' }}>📎</div>
+
+                      {/* Header */}
+                      <h3 className="text-4xl font-marker text-[#d35442] mb-1 select-none">{selectedProject.title}</h3>
+                      <p className="font-hand-kalam text-xl text-slate-800 font-bold mb-4 border-b border-[#d35442]/20 pb-2">{selectedProject.subtitle}</p>
+                      
+                      <p className="font-hand-kalam text-lg text-slate-700/90 leading-relaxed mb-6 select-none">
+                        {selectedProject.description}
+                      </p>
+
+                      {/* Business Impact Section */}
+                      <div className="bg-white/50 border border-slate-300/40 rounded p-4 mb-6 shadow-inner">
+                        <h4 className="font-hand-kalam text-base text-[#d35442] font-bold mb-2 flex items-center gap-1.5 select-none">
+                          ⚡ Recruiter Quick-Scan (Impact):
+                        </h4>
+                        <ul className="font-hand-kalam text-base space-y-2 text-slate-800 select-none list-disc list-inside">
+                          {selectedProject.metrics.map((metric, i) => (
+                            <li key={i}>{metric}</li>
+                          ))}
+                        </ul>
+                      </div>
+
+                      {/* Stack details */}
+                      <div className="mb-6">
+                        <p className="font-hand-kalam text-base text-slate-800 font-bold mb-2 select-none">🛠 Tech Stack:</p>
+                        <div className="flex flex-wrap gap-2">
+                          {selectedProject.stack.map((tag) => (
+                            <span key={tag} className="text-xs text-slate-800 bg-[#e2cfb6] px-2.5 py-1.5 rounded shadow-sm font-hand-kalam border border-black/10 hover:scale-102 transition-transform">
+                              {tag}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* Links */}
+                      <div className="flex gap-4 pt-2">
+                        <a href={selectedProject.codeUrl} className="font-hand-kalam text-base border-2 border-dashed border-slate-800 hover:border-solid px-4 py-1.5 rounded hover:bg-slate-800 hover:text-white transition-all select-none">
+                          GitHub Code 💻
+                        </a>
+                        <a href={selectedProject.demoUrl} className="font-hand-kalam text-base border-2 border-dashed border-[#d35442] hover:border-solid px-4 py-1.5 rounded hover:bg-[#d35442] hover:text-white transition-all select-none text-[#d35442]">
+                          Live Demo 🔗
+                        </a>
+                      </div>
+                    </div>
+                  )}
+
+                </motion.div>
+              </AnimatePresence>
+            ) : (
+              /* Mobile view: accordion stack */
+              <div className="space-y-4">
+                {projects.map((project) => {
+                  const isOpen = selectedId === project.id;
+                  return (
+                    <div
+                      key={project.id}
+                      className="bg-[#fcfbe3] rounded-lg shadow border border-slate-300 overflow-hidden"
+                    >
+                      {/* Mobile Accordion Header */}
+                      <button
+                        onClick={() => handleSelectProject(project.id)}
+                        className={`w-full text-left p-4 font-hand-kalam text-lg font-bold flex justify-between items-center transition-colors cursor-pointer select-none ${
+                          isOpen ? "bg-[#e7d7c1] text-[#9c3e2f]" : "bg-white text-slate-700 hover:bg-[#e7d7c1]/20"
+                        }`}
+                      >
+                        <span>{project.title}</span>
+                        <span>{isOpen ? "▲" : "▼"}</span>
+                      </button>
+
+                      {/* Mobile Accordion Content */}
+                      <AnimatePresence initial={false}>
+                        {isOpen && (
+                          <motion.div
+                            initial={{ height: 0, opacity: 0 }}
+                            animate={{ height: "auto", opacity: 1 }}
+                            exit={{ height: 0, opacity: 0 }}
+                            transition={{ duration: 0.3 }}
+                          >
+                            <div className="p-5 border-t border-slate-200 space-y-4 text-slate-800 font-hand-kalam">
+                              <p className="text-slate-800 font-bold border-b pb-1.5 text-base">{project.subtitle}</p>
+                              <p className="text-sm leading-relaxed text-slate-600">{project.description}</p>
+                              
+                              {/* RENDER INLINE ON MOBILE FOR INTERACTIVE TYPES */}
+                              {project.type === "monitor" && (
+                                <div className="bg-terminal-bg rounded-lg p-4 h-[350px] relative overflow-hidden border-2 border-slate-800 mt-2 select-text">
+                                  <InteractiveTerminal />
+                                </div>
+                              )}
+
+                              {project.type === "sandbox" && (
+                                <div className="mt-2 select-text">
+                                  <VaultSandbox />
+                                </div>
+                              )}
+
+                              {project.type === "dossier" && (
+                                <div className="bg-white/50 border rounded p-3 text-sm">
+                                  <p className="font-bold text-xs text-[#d35442] mb-1.5 uppercase tracking-wide">Key Metrics & Impact:</p>
+                                  <ul className="list-disc list-inside space-y-1.5 text-xs text-slate-700">
+                                    {project.metrics.map((metric, i) => (
+                                      <li key={i}>{metric}</li>
+                                    ))}
+                                  </ul>
+                                </div>
+                              )}
+
+                              {/* Stack tags */}
+                              <div>
+                                <p className="text-xs font-bold text-slate-700 mb-1 select-none">Tech Stack:</p>
+                                <div className="flex flex-wrap gap-1.5">
+                                  {project.stack.map((tag) => (
+                                    <span key={tag} className="text-xs text-slate-800 bg-[#e2cfb6] px-2 py-0.5 rounded shadow-sm border border-black/5">
+                                      {tag}
+                                    </span>
+                                  ))}
+                                </div>
+                              </div>
+
+                              {/* Mobile Links */}
+                              <div className="flex gap-3 pt-2">
+                                <a href={project.codeUrl} className="text-xs border border-slate-800 px-3 py-1.5 rounded hover:bg-slate-800 hover:text-white transition-all text-center flex-1">
+                                  GitHub Code 💻
+                                </a>
+                                <a href={project.demoUrl} className="text-xs border border-[#d35442] px-3 py-1.5 rounded hover:bg-[#d35442] hover:text-white transition-all text-center text-[#d35442] flex-1">
+                                  Live Demo 🔗
+                                </a>
+                              </div>
+                            </div>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </div>
+                  );
+                })}
               </div>
-              <div className="absolute bottom-2 right-6 w-8 h-1 bg-green-500 rounded-full shadow-[0_0_5px_#22c55e]" />
-            </div>
-          </motion.div>
-
-          {/* Top Right Note: most ideas start at 2am */}
-          <motion.div
-            initial={{ opacity: 0, y: 20, rotate: 2 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5, delay: 0.3 }}
-            whileHover={{ y: -8, boxShadow: "0 25px 50px -12px rgba(0,0,0,0.3)", rotate: 1, zIndex: 50 }}
-            className="md:absolute md:left-[62%] md:top-[500px] w-full max-w-[200px] mx-auto md:mx-0 z-40 transition-colors duration-300 float-slow-3"
-            onMouseEnter={() => setHoveredCommit('2am')}
-            onMouseLeave={() => setHoveredCommit(null)}
-          >
-            <div className="bg-note-yellow p-6 shadow-layered relative rounded-sm">
-              <p className="font-hand-kalam text-slate-800 text-xl leading-snug text-center">
-                most ideas<br />start at 2am
-              </p>
-              <div className="absolute bottom-0 right-0 w-8 h-8 bg-gradient-to-tl from-white/40 to-transparent rounded-tl-xl shadow-[-1px_-1px_3px_rgba(0,0,0,0.05)]" />
-            </div>
-          </motion.div>
-
-          {/* Top Right Note: Web3 dApp */}
-          <motion.div
-            initial={{ opacity: 0, y: 20, rotate: -1 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5, delay: 0.35 }}
-            whileHover={{ y: -8, boxShadow: "0 25px 50px -12px rgba(0,0,0,0.3)", rotate: -0.5, zIndex: 50 }}
-            className="md:absolute md:left-[55%] md:top-[580px] w-full max-w-[280px] mx-auto md:mx-0 z-30 transition-colors duration-300 float-slow-1"
-            onMouseEnter={() => setHoveredCommit('web3')}
-            onMouseLeave={() => setHoveredCommit(null)}
-          >
-            <div className="bg-note-tan p-5 shadow-layered relative rounded-sm">
-              <p className="font-mono text-slate-800 text-sm font-medium">
-                Web3 dApp, Solidity,<br />
-                Ethers.js, Next.js
-              </p>
-              <div className="absolute bottom-0 right-0 w-8 h-8 bg-gradient-to-tl from-white/40 to-transparent rounded-tl-xl shadow-[-1px_-1px_3px_rgba(0,0,0,0.05)]" />
-            </div>
-          </motion.div>
-
-          {/* PROJECT: Full Stack Experiments */}
-          <motion.div
-            initial={{ opacity: 0, y: 20, rotate: -2 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5, delay: 0.4 }}
-            whileHover={{ y: -8, boxShadow: "0 25px 50px -12px rgba(0,0,0,0.3)", rotate: -1, zIndex: 60 }}
-            className="md:absolute md:left-[5%] md:top-[850px] lg:left-[8%] lg:top-[820px] w-full max-w-[340px] mx-auto md:mx-0 z-30 transition-colors duration-300 float-slow-2"
-            onMouseEnter={() => setHoveredCommit('fullstack')}
-            onMouseLeave={() => setHoveredCommit(null)}
-          >
-            <div className="bg-cream-light p-6 shadow-layered relative rounded-sm group">
-              <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-16 h-6 z-20 bg-white/50 backdrop-blur-sm shadow-[0_1px_3px_rgba(0,0,0,0.1)] rounded-sm" />
-              <h3 className="text-2xl font-bold font-hand-kalam text-slate-800 mb-2">
-                Full Stack Experiments
-              </h3>
-              <hr className="border-t border-slate-400/50 mb-3" />
-              <div className="font-mono text-sm space-y-3">
-                <div>
-                  <p className="text-red-500 font-bold mb-1">Stack:</p>
-                  <p className="text-slate-800 font-medium">MERN • Tailwind • Docker • <br />GraphQL</p>
-                </div>
-                <div className="pt-2 pb-1">
-                  <a href="#" className="inline-flex items-center text-blue-600 font-bold hover:text-blue-800 transition-colors">
-                    Live <span className="ml-1 text-base leading-none">&rarr;</span>
-                  </a>
-                </div>
-              </div>
-              <div className="absolute bottom-0 right-0 w-8 h-8 bg-gradient-to-tl from-white/60 to-transparent rounded-tl-xl shadow-[-1px_-1px_3px_rgba(0,0,0,0.05)]" />
-            </div>
-          </motion.div>
-
-          {/* PROJECT: AI Resume Parser */}
-          <motion.div
-            initial={{ opacity: 0, y: 20, rotate: 1 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5, delay: 0.45 }}
-            whileHover={{ y: -8, boxShadow: "0 25px 50px -12px rgba(0,0,0,0.3)", rotate: 0.5, zIndex: 60 }}
-            className="md:absolute md:left-[38%] md:top-[900px] lg:left-[40%] lg:top-[880px] w-full max-w-[320px] mx-auto md:mx-0 z-20 transition-colors duration-300 float-slow-3"
-            onMouseEnter={() => setHoveredCommit('resume')}
-            onMouseLeave={() => setHoveredCommit(null)}
-          >
-            <div className="bg-note-yellow p-6 shadow-layered relative rounded-sm group">
-              <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-16 h-6 z-20 bg-white/50 backdrop-blur-sm shadow-[0_1px_3px_rgba(0,0,0,0.1)] rounded-sm" />
-              <h3 className="text-2xl font-bold font-hand-kalam text-slate-800 mb-2">
-                AI Resume Parser
-              </h3>
-              <hr className="border-t border-slate-400/50 mb-3" />
-              <div className="font-mono text-sm space-y-3">
-                <div>
-                  <p className="text-red-500 font-bold mb-1">Stack:</p>
-                  <p className="text-slate-800 font-medium">Python • FastAPI • OpenAI</p>
-                </div>
-                <div className="pt-2 pb-1">
-                  <a href="#" className="inline-flex items-center text-blue-600 font-bold hover:text-blue-800 transition-colors">
-                    Live <span className="ml-1 text-base leading-none">&rarr;</span>
-                  </a>
-                </div>
-              </div>
-              <div className="absolute bottom-0 right-0 w-8 h-8 bg-gradient-to-tl from-white/60 to-transparent rounded-tl-xl shadow-[-1px_-1px_3px_rgba(0,0,0,0.05)]" />
-            </div>
-          </motion.div>
-
-          {/* PROJECT: Developer CLI Tool */}
-          <motion.div
-            initial={{ opacity: 0, y: 20, rotate: -2 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5, delay: 0.5 }}
-            whileHover={{ y: -8, boxShadow: "0 25px 50px -12px rgba(0,0,0,0.3)", rotate: -1, zIndex: 60 }}
-            className="md:absolute md:left-[66%] md:top-[800px] lg:left-[68%] lg:top-[780px] w-full max-w-[300px] mx-auto md:mx-0 z-40 transition-colors duration-300 float-slow-1"
-            onMouseEnter={() => setHoveredCommit('cli')}
-            onMouseLeave={() => setHoveredCommit(null)}
-          >
-            <div className="bg-note-tan p-6 shadow-layered relative rounded-sm group">
-              <div className="absolute -top-3 left-[40%] -translate-x-1/2 w-16 h-6 z-20 bg-white/50 backdrop-blur-sm shadow-[0_1px_3px_rgba(0,0,0,0.1)] rounded-sm" />
-              <h3 className="text-2xl font-bold font-hand-kalam text-slate-800 mb-2">
-                Developer CLI Tool
-              </h3>
-              <hr className="border-t border-slate-400/50 mb-3" />
-              <div className="font-mono text-sm space-y-3">
-                <div>
-                  <p className="text-red-500 font-bold mb-1">Stack:</p>
-                  <p className="text-slate-800 font-medium">Node.js • TypeScript</p>
-                </div>
-                <div className="pt-2 pb-1">
-                  <a href="#" className="inline-flex items-center text-blue-600 font-bold hover:text-blue-800 transition-colors">
-                    Live <span className="ml-1 text-base leading-none">&rarr;</span>
-                  </a>
-                </div>
-              </div>
-              <div className="absolute bottom-0 right-0 w-8 h-8 bg-gradient-to-tl from-white/50 to-transparent rounded-tl-xl shadow-[-1px_-1px_3px_rgba(0,0,0,0.05)]" />
-            </div>
-          </motion.div>
-
-        </div>
-
-        {/* Developer Workflow Sketch */}
-        <div className="flex justify-center mt-32 -mb-12 relative w-full px-4 select-none z-10">
-          <div className="bg-note-tan text-slate-800 px-8 py-3 shadow-md -rotate-2 relative flex flex-wrap items-center justify-center gap-4 sm:gap-5 md:gap-6 font-hand-kalam text-lg md:text-xl">
-            {/* Small Tape */}
-            <div className="absolute -top-[10px] left-1/2 -translate-x-1/2 w-[50px] h-[20px] bg-white/40 shadow-sm mix-blend-overlay rotate-[3deg]" />
-            
-            {/* Idea */}
-            <div className="flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-slate-800 mt-0.5 opacity-80" />
-              <span>idea</span>
-              <svg className="w-6 h-6 ml-1 opacity-60 text-slate-800" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M4 13 Q 12 10, 19 13" />
-                <path d="M15 9 L 19 13 L 13 16" />
-              </svg>
-            </div>
-            
-            {/* Design */}
-            <div className="flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-slate-800 mt-0.5 opacity-80" />
-              <span>design</span>
-              <svg className="w-6 h-6 ml-1 opacity-60 text-slate-800" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M3 11 C 9 14, 15 11, 20 12" />
-                <path d="M15 8 L 20 12 L 16 16" />
-              </svg>
-            </div>
-
-            {/* Build */}
-            <div className="flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-slate-800 mt-0.5 opacity-80" />
-              <span>build</span>
-              <svg className="w-6 h-6 ml-1 opacity-60 text-slate-800" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M4 12 Q 12 14, 19 11" />
-                <path d="M14 7 L 19 11 L 15 15" />
-              </svg>
-            </div>
-
-            {/* Automate */}
-            <div className="flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-slate-800 mt-0.5 opacity-80" />
-              <span>automate</span>
-              <svg className="w-6 h-6 ml-1 opacity-60 text-slate-800" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M3 13 C 10 10, 15 13, 20 11" />
-                <path d="M16 6 L 20 11 L 14 14" />
-              </svg>
-            </div>
-
-            {/* Deploy */}
-            <div className="flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-slate-800 mt-0.5 opacity-80" />
-              <span>deploy</span>
-            </div>
-            
-            {/* Hand-drawn Down Arrow connecting to bottom text */}
-            <svg className="absolute -bottom-24 left-[55%] -translate-x-1/2 w-16 h-28 text-cream-light opacity-90 pointer-events-none -rotate-3 z-0" viewBox="0 0 50 100" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M 25 5 Q 35 50, 20 95" />
-              <path d="M 12 85 L 20 95 L 28 85" strokeDasharray="0" />
-            </svg>
+            )}
 
           </div>
+
         </div>
 
-        {/* Always shipping footer */}
-        <div className="flex items-center justify-center gap-4 mt-32 relative z-10">
+        {/* ALWAYS SHIPPING FOOTER */}
+        <div className="flex items-center justify-center gap-4 mt-32 relative z-10 select-none">
           <p className="font-hand-kalam text-3xl text-cream-light relative">
             Always shipping.
           </p>
@@ -363,6 +509,7 @@ const BuildLogsSection = () => {
             <path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z" />
           </svg>
         </div>
+
       </div>
     </section>
   );

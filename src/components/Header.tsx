@@ -13,7 +13,13 @@ const SmileyFace = ({ className }: { className?: string }) => (
 
 const OvalHighlight = ({ className }: { className?: string }) => (
   <svg className={className} viewBox="0 0 120 40" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" preserveAspectRatio="none">
-    <path d="M10,20 C10,5 110,6 110,20 C110,34 10,35 15,18 C18,8 100,8 100,22" />
+    <motion.path 
+      d="M10,20 C10,5 110,6 110,20 C110,34 10,35 15,18 C18,8 100,8 100,22" 
+      initial={{ pathLength: 0 }}
+      animate={{ pathLength: 1 }}
+      exit={{ pathLength: 0 }}
+      transition={{ duration: 0.4, ease: "easeInOut" }}
+    />
   </svg>
 );
 
