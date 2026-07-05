@@ -83,33 +83,33 @@ const GithubIcon = ({ className }: { className?: string }) => (
 );
 
 interface HeaderProps {
-  onNavigate?: (target: "about" | "work" | "connect") => void;
+  onNavigate?: (target: "profile" | "archives" | "contact") => void;
 }
 
 const Header = ({ onNavigate }: HeaderProps) => {
   const [hoveredLink, setHoveredLink] = useState<string | null>(null);
   const [isBlinking, setIsBlinking] = useState(false);
 
-  const handleAboutClick = (e: React.MouseEvent) => {
+  const handleProfileClick = (e: React.MouseEvent) => {
     if (onNavigate) {
       e.preventDefault();
-      onNavigate("about");
+      onNavigate("profile");
     }
   };
 
-  const handleWorkClick = (e: React.MouseEvent) => {
+  const handleArchivesClick = (e: React.MouseEvent) => {
     if (onNavigate) {
       e.preventDefault();
-      onNavigate("work");
+      onNavigate("archives");
     }
   };
 
-  const handleConnectClick = (e: React.MouseEvent) => {
+  const handleContactClick = (e: React.MouseEvent) => {
     setIsBlinking(true);
     setTimeout(() => setIsBlinking(false), 800);
     if (onNavigate) {
       e.preventDefault();
-      onNavigate("connect");
+      onNavigate("contact");
     }
   };
 
@@ -128,21 +128,21 @@ const Header = ({ onNavigate }: HeaderProps) => {
             </motion.div>
           </li>
 
-          {/* ABOUT LINK */}
+          {/* PROFILE LINK */}
           <li 
             className="relative"
-            onMouseEnter={() => setHoveredLink("about")}
+            onMouseEnter={() => setHoveredLink("profile")}
             onMouseLeave={() => setHoveredLink(null)}
           >
             <a 
               className="relative z-10 hover:text-white transition-colors block px-2 py-1 cursor-pointer" 
-              href="#about"
-              onClick={handleAboutClick}
+              href="#profile"
+              onClick={handleProfileClick}
             >
-              about
+              profile
             </a>
             <AnimatePresence>
-              {hoveredLink === "about" && (
+              {hoveredLink === "profile" && (
                 <motion.div 
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
@@ -157,7 +157,7 @@ const Header = ({ onNavigate }: HeaderProps) => {
                     animate={{ y: 0, opacity: 1 }}
                     className="absolute -bottom-8 left-1/2 -translate-x-1/2 text-[#d35442] text-xl whitespace-nowrap"
                   >
-                    view bio
+                    researcher profile
                   </motion.span>
                   
                   {/* Top Doodles */}
@@ -169,7 +169,7 @@ const Header = ({ onNavigate }: HeaderProps) => {
                   >
                     <SpikyFace className="w-12 h-12 text-cream-light" />
                   </motion.div>
-
+                  
                   <motion.div 
                     initial={{ scale: 0, rotate: -45 }}
                     animate={{ scale: 1, rotate: 0 }}
@@ -178,7 +178,7 @@ const Header = ({ onNavigate }: HeaderProps) => {
                   >
                     <Sparkle className="w-6 h-6 text-cream-light" />
                   </motion.div>
-
+                  
                   <motion.div 
                     initial={{ scale: 0, rotate: 45 }}
                     animate={{ scale: 1, rotate: 0 }}
@@ -192,21 +192,21 @@ const Header = ({ onNavigate }: HeaderProps) => {
             </AnimatePresence>
           </li>
 
-          {/* WORK LINK */}
+          {/* ARCHIVES LINK */}
           <li 
             className="relative"
-            onMouseEnter={() => setHoveredLink("work")}
+            onMouseEnter={() => setHoveredLink("archives")}
             onMouseLeave={() => setHoveredLink(null)}
           >
             <a 
               className="relative z-10 hover:text-white transition-colors block px-2 py-1 cursor-pointer" 
-              href="#work"
-              onClick={handleWorkClick}
+              href="#archives"
+              onClick={handleArchivesClick}
             >
-              work
+              archives
             </a>
             <AnimatePresence>
-              {hoveredLink === "work" && (
+              {hoveredLink === "archives" && (
                 <motion.div 
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
@@ -216,6 +216,14 @@ const Header = ({ onNavigate }: HeaderProps) => {
                 >
                   <OvalHighlight className="absolute -left-2 -top-1 w-[120%] h-[120%] text-cream-light opacity-80" />
                   
+                  <motion.span 
+                    initial={{ y: -5, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    className="absolute -bottom-8 left-1/2 -translate-x-1/2 text-[#d35442] text-xl whitespace-nowrap"
+                  >
+                    experiments
+                  </motion.span>
+                  
                   <motion.div 
                     initial={{ y: 20, opacity: 0 }}
                     animate={{ y: -70, opacity: 1 }}
@@ -224,7 +232,7 @@ const Header = ({ onNavigate }: HeaderProps) => {
                   >
                     <Badge className="w-14 h-16 text-cream-light" />
                   </motion.div>
-
+                  
                   <motion.div 
                     initial={{ x: -10, y: 10, opacity: 0 }}
                     animate={{ x: 25, y: -40, opacity: 1 }}
@@ -239,21 +247,21 @@ const Header = ({ onNavigate }: HeaderProps) => {
             </AnimatePresence>
           </li>
 
-          {/* CONNECT LINK */}
+          {/* CONTACT LINK */}
           <li 
             className="relative"
-            onMouseEnter={() => setHoveredLink("Connect")}
+            onMouseEnter={() => setHoveredLink("contact")}
             onMouseLeave={() => setHoveredLink(null)}
           >
             <a 
               className="relative z-10 hover:text-white transition-colors block px-2 py-1 cursor-pointer" 
-              href="#connect"
-              onClick={handleConnectClick}
+              href="#contact"
+              onClick={handleContactClick}
             >
-              Connect
+              contact
             </a>
             <AnimatePresence>
-              {hoveredLink === "Connect" && (
+              {hoveredLink === "contact" && (
                 <motion.div 
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
@@ -262,6 +270,14 @@ const Header = ({ onNavigate }: HeaderProps) => {
                   className="absolute inset-0 z-0 pointer-events-none"
                 >
                   <OvalHighlight className="absolute -left-1 -top-1 w-[110%] h-[120%] text-cream-light opacity-80" />
+                  
+                  <motion.span 
+                    initial={{ y: -5, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    className="absolute -bottom-8 left-1/2 -translate-x-1/2 text-[#d35442] text-xl whitespace-nowrap"
+                  >
+                    transmission
+                  </motion.span>
                   
                   {/* Social Icons floating up */}
                   <motion.div 
@@ -274,7 +290,7 @@ const Header = ({ onNavigate }: HeaderProps) => {
                       <GithubIcon className="w-8 h-8 text-cream-light hover:scale-110 transition-transform" />
                     </a>
                   </motion.div>
-
+                  
                   <motion.div 
                     initial={{ y: 10, x: 0, opacity: 0, rotate: 20 }}
                     animate={{ y: -45, x: 10, opacity: 1, rotate: 10 }}
@@ -286,7 +302,7 @@ const Header = ({ onNavigate }: HeaderProps) => {
                       <LinkedInIcon className="w-8 h-8 text-cream-light hover:scale-110 transition-transform" />
                     </a>
                   </motion.div>
-
+                  
                 </motion.div>
               )}
             </AnimatePresence>

@@ -9,15 +9,15 @@ const Index = () => {
 
   // Map header navigations directly to book spreads
   // Guard: only navigate if logbook has been unlocked via the key
-  const handleNavigate = (target: "about" | "work" | "connect") => {
+  const handleNavigate = (target: "profile" | "archives" | "contact") => {
     if (sessionStorage.getItem("logbook_unlocked") !== "true") return; // key not used yet
     setIsBookOpen(true);
-    if (target === "about") {
+    if (target === "profile") {
       setCurrentPage(0);
-    } else if (target === "work") {
+    } else if (target === "archives") {
       setCurrentPage(2);
-    } else if (target === "connect") {
-      setCurrentPage(4);
+    } else if (target === "contact") {
+      setCurrentPage(5);
     }
   };
 

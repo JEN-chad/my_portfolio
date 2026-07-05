@@ -16,6 +16,13 @@ interface Project {
   stack: string[];
   codeUrl: string;
   demoUrl: string;
+  experimentId: string;
+  researchQuestion: string;
+  systemDesign: string;
+  challenges: string[];
+  techFormula: string[];
+  result: string;
+  status: string;
 }
 
 interface BookBinderProps {
@@ -42,16 +49,47 @@ export default function BookBinder({
 
   // Navigation tabs
   const tabs = [
-    { label: "About 📝", index: 0, color: "bg-[#e7d7c1] text-slate-800" },
-    { label: "Skillset 🛠", index: 1, color: "bg-[#88c5f7] text-slate-800" },
-    { label: "Projects 📁", index: 2, color: "bg-[#fbc67b] text-slate-800" },
-    { label: "Experience 💼", index: 3, color: "bg-[#a259ff]/20 text-[#a259ff] border-[#a259ff]/30" },
-    { label: "Connect ✉️", index: 4, color: "bg-note-yellow text-slate-800" },
+    { label: "Profile 📝", index: 0, color: "bg-[#e7d7c1] text-slate-800" },
+    { label: "Modules 🛠", index: 1, color: "bg-[#88c5f7] text-slate-800" },
+    { label: "Archives 📁", index: 2, color: "bg-[#fbc67b] text-slate-800" },
+    { label: "Blueprints 📐", index: 3, color: "bg-[#86d9cc] text-slate-800" },
+    { label: "Field Logs 💼", index: 4, color: "bg-[#c5aefb] text-slate-800" },
+    { label: "Transmission ✉️", index: 5, color: "bg-note-yellow text-slate-800" },
   ];
 
   // Mindset Brain node state
   const [activeBrainNode, setActiveBrainNode] = useState<string>("manifesto");
   const [isUnlocking, setIsUnlocking] = useState(false);
+  const [isBooting, setIsBooting] = useState(false);
+  const [bootLines, setBootLines] = useState<string[]>([]);
+  const [recruiterOpen, setRecruiterOpen] = useState(false);
+
+  const startBootSequence = useCallback(() => {
+    setIsBooting(true);
+    setBootLines([]);
+    
+    const lines = [
+      "Opening archive...",
+      "Scanning research files...",
+      "Loading experiments...",
+      "Loading failures...",
+      "Loading discoveries...",
+      "Welcome Researcher."
+    ];
+
+    lines.forEach((line, index) => {
+      setTimeout(() => {
+        setBootLines(prev => [...prev, line]);
+        if (index === lines.length - 1) {
+          setTimeout(() => {
+            setIsBookOpen(true);
+            setCurrentPage(0);
+            setIsBooting(false);
+          }, 600);
+        }
+      }, (index + 1) * 350);
+    });
+  }, [setIsBookOpen, setCurrentPage]);
 
   // Handle key unlock completion
   const handleUnlockComplete = useCallback(() => {
@@ -59,11 +97,10 @@ export default function BookBinder({
     setBookLocked(false);
     setIsUnlocking(true);
     setTimeout(() => {
-      setIsBookOpen(true);
-      setCurrentPage(0);
       setIsUnlocking(false);
+      startBootSequence();
     }, 650);
-  }, [setIsBookOpen, setCurrentPage]);
+  }, [startBootSequence]);
 
   // Shake the cover when clicked while locked
   const handleLockedCoverClick = useCallback(() => {
@@ -90,6 +127,9 @@ export default function BookBinder({
   // Polaroid hover flips
   const [flippedPolaroid, setFlippedPolaroid] = useState<string | null>(null);
 
+  // Blueprint room state
+  const [selectedBlueprint, setSelectedBlueprint] = useState<string>("hiremind");
+
   // Postcard send animation state
   const [postcardState, setPostcardState] = useState<"editing" | "sending" | "sent">("editing");
   const [senderName, setSenderName] = useState("");
@@ -106,48 +146,47 @@ export default function BookBinder({
   const allConnectChecked = checkedConnect.length === checklistItems.length;
 
   // Zoho/OpenEnv ledger experiences
-const experiences = [
-  {
-    id: "Academor",
-    role: "AI Engineering Intern",
-    company: "Academor",
-    duration: "June 24 - July 24",
-    bullets: [
-      "Fine-tuned ML models in PyTorch",
-      "Built data preprocessing pipelines",
-      "Optimized deep learning workflows"
-    ]
-  },
+  const experiences = [
     {
-    id: "GFG",
-    role: "Full Stack Developer Course",
-    company: "GeeksforGeeks",
-    duration: "April 25 - July 25",
-    bullets: [
-      "14-week React & Node JS course",
-      "Built production-ready MERN apps",
-      "Mastered MongoDB & Express APIs"
-    ]
-  },
-  {
-    id: "Zuntra",
-    role: "AI Agent & Automation Intern",
-    company: "Zuntra",
-    duration: "Sep 25 - Mar 26",
-    bullets: [
-      "Integrated LLM APIs & systems",
-      "Built React & Node.js features",
-      "Designed autonomous AI workflows"
-    ]
-  }
+      id: "Academor",
+      role: "AI Engineering Intern",
+      company: "Academor",
+      duration: "June 24 - July 24",
+      bullets: [
+        "Fine-tuned ML models in PyTorch",
+        "Built data preprocessing pipelines",
+        "Optimized deep learning workflows"
+      ]
+    },
+    {
+      id: "GFG",
+      role: "Full Stack Developer Course",
+      company: "GeeksforGeeks",
+      duration: "April 25 - July 25",
+      bullets: [
+        "14-week React & Node JS course",
+        "Built production-ready MERN apps",
+        "Mastered MongoDB & Express APIs"
+      ]
+    },
+    {
+      id: "Zuntra",
+      role: "AI Agent & Automation Intern",
+      company: "Zuntra",
+      duration: "Sep 25 - Mar 26",
+      bullets: [
+        "Integrated LLM APIs & systems",
+        "Built React & Node.js features",
+        "Designed autonomous AI workflows"
+      ]
+    }
+  ];
 
-];
-
-  // 7 Projects list
+  // 7 Projects list with AI Builder Field Journal layout
   const projects: Project[] = [
     {
       id: "hiremind",
-      title: "HireMindAI",
+      title: "HireMind AI",
       subtitle: "AI Recruitment Operating System",
       description: "Automated candidate evaluations, resume parsers, and custom interview graders built using Vertex AI pipeline platforms.",
       category: "ai",
@@ -160,7 +199,19 @@ const experiences = [
       ],
       stack: ["Next.js", "Drizzle ORM", "Neon Postgres", "Google Gemini", "Vertex AI", "Resend"],
       codeUrl: "https://github.com/JEN-chad/HireMindAI",
-      demoUrl: "https://github.com/JEN-chad/HireMindAI"
+      demoUrl: "https://github.com/JEN-chad/HireMindAI",
+      experimentId: "001-A",
+      researchQuestion: "Can AI automate first round technical interviews?",
+      systemDesign: "Candidate ➔ Voice AI Agent ➔ Evaluation Engine ➔ Recruiter Dashboard",
+      challenges: [
+        "Realtime AI communication latency",
+        "Resume intelligence accuracy",
+        "Authentication systems partitioning",
+        "Database architecture scaling"
+      ],
+      techFormula: ["Next.js", "Gemini", "LiveKit", "MongoDB"],
+      result: "Production ready AI interview platform.",
+      status: "DEPLOYED"
     },
     {
       id: "codesentry",
@@ -177,7 +228,19 @@ const experiences = [
       ],
       stack: ["Python", "FastAPI", "CLI", "Static Analysis", "AI prompting"],
       codeUrl: "https://github.com/JEN-chad/codesentry",
-      demoUrl: "https://github.com/JEN-chad/codesentry"
+      demoUrl: "https://github.com/JEN-chad/codesentry",
+      experimentId: "002-B",
+      researchQuestion: "Can static analysis catch AI code vulnerabilities in under 0.5s?",
+      systemDesign: "Local Commit ➔ AST Scanner ➔ Security Rules ➔ Remediation Engine",
+      challenges: [
+        "High-performance regex filters",
+        "AST parse boundary limits",
+        "Zero dependency execution speed",
+        "Developer workflow integration"
+      ],
+      techFormula: ["Python", "FastAPI", "CLI", "Static Analysis"],
+      result: "CLI scanner catching secrets and SQLi before commit.",
+      status: "DEPLOYED"
     },
     {
       id: "oncoenv",
@@ -194,7 +257,19 @@ const experiences = [
       ],
       stack: ["Python", "FastAPI", "Uvicorn", "Pydantic", "NumPy", "SciPy", "OpenEnv"],
       codeUrl: "https://github.com/JEN-chad/OncoEnv",
-      demoUrl: "https://github.com/JEN-chad/OncoEnv"
+      demoUrl: "https://github.com/JEN-chad/OncoEnv",
+      experimentId: "003-C",
+      researchQuestion: "Can RL agents train effectively on simulated bioinformatics spaces?",
+      systemDesign: "RL Agent ➔ Gene Editing Actions ➔ scRNA Simulation ➔ Stepwise Reward Evaluation",
+      challenges: [
+        "High-dimensional count matrices",
+        "Stepwise reward validation",
+        "Procedural state speed limits",
+        "Bioinformatics regulatory rules"
+      ],
+      techFormula: ["Python", "NumPy", "SciPy", "Gym", "FastAPI"],
+      result: "Procedurally generated regulatory biology world training ground.",
+      status: "RESEARCH ACTIVE"
     },
     {
       id: "vault",
@@ -211,7 +286,19 @@ const experiences = [
       ],
       stack: ["FastAPI", "Next.js", "Expo Mobile", "Drizzle ORM", "Neon Postgres", "Docker"],
       codeUrl: "https://github.com/JEN-chad/Crack-The-Vault",
-      demoUrl: "https://github.com/JEN-chad/Crack-The-Vault"
+      demoUrl: "https://github.com/JEN-chad/Crack-The-Vault",
+      experimentId: "004-D",
+      researchQuestion: "Can dynamic policy engines neutralize adversarial prompt injections?",
+      systemDesign: "User Query ➔ Injection Checkers ➔ LLM Guard Evaluator ➔ Security Response",
+      challenges: [
+        "Dynamic injection scoring",
+        "Adversarial payload isolation",
+        "Real-time state verification",
+        "Symposium fund locking logic"
+      ],
+      techFormula: ["FastAPI", "Next.js", "Docker", "Drizzle", "Postgres"],
+      result: "Prompt injection security trainer sandbox.",
+      status: "ONLINE"
     },
     {
       id: "devflow",
@@ -228,7 +315,19 @@ const experiences = [
       ],
       stack: ["MongoDB", "Express", "React", "Node.js", "Socket.io", "Tailwind CSS"],
       codeUrl: "https://github.com/JEN-chad/DevFlow",
-      demoUrl: "https://github.com/JEN-chad/DevFlow"
+      demoUrl: "https://github.com/JEN-chad/DevFlow",
+      experimentId: "005-E",
+      researchQuestion: "Can webhook integration streams sync agile board tickets in real-time?",
+      systemDesign: "Git Webhook ➔ Auth Server ➔ Queue Worker ➔ WebSocket Client Sync",
+      challenges: [
+        "Concurrent event ordering",
+        "Payload signature verification",
+        "Socket.io Room coordination",
+        "Database transaction speed"
+      ],
+      techFormula: ["React", "Node.js", "Express", "MongoDB", "Socket.io"],
+      result: "Agile project board synced with webhooks.",
+      status: "DEPLOYED"
     },
     {
       id: "collabboard",
@@ -245,7 +344,19 @@ const experiences = [
       ],
       stack: ["React", "Vite", "Tailwind CSS", "Socket.io", "Express", "MongoDB"],
       codeUrl: "https://github.com/JEN-chad/CollabBoard",
-      demoUrl: "https://github.com/JEN-chad/CollabBoard"
+      demoUrl: "https://github.com/JEN-chad/CollabBoard",
+      experimentId: "006-F",
+      researchQuestion: "Can optimistic UI updates resolve multi-user collisions gracefully?",
+      systemDesign: "Client Action ➔ Local Optimistic Render ➔ Conflict Sync ➔ DB Commit",
+      challenges: [
+        "Optimistic UI rollback logs",
+        "Write race conflict checks",
+        "Near-zero network lag displays",
+        "Database versioning protocols"
+      ],
+      techFormula: ["React", "Vite", "Express", "MongoDB", "WebSockets"],
+      result: "Optimistically updated concurrent collaboration board.",
+      status: "DEPLOYED"
     },
     {
       id: "supportdesk",
@@ -262,17 +373,45 @@ const experiences = [
       ],
       stack: ["React", "Tailwind CSS", "React Query", "Node.js", "Express", "MongoDB"],
       codeUrl: "https://github.com/JEN-chad/SupportDesk",
-      demoUrl: "https://github.com/JEN-chad/SupportDesk"
+      demoUrl: "https://github.com/JEN-chad/SupportDesk",
+      experimentId: "007-G",
+      researchQuestion: "Can multi-tenant database structures enforce sub-millisecond query separation?",
+      systemDesign: "Tenant Middleware ➔ Shared Database Pool ➔ Query Filter Isolation ➔ Response",
+      challenges: [
+        "Query-level safety isolation",
+        "Dynamic workspace mappings",
+        "Real-time diagnostic caching",
+        "High availability route logic"
+      ],
+      techFormula: ["React", "React Query", "Node.js", "Express", "MongoDB"],
+      result: "Multi-tenant partitioned workspace support platform.",
+      status: "DEPLOYED"
     }
   ];
 
   const selectedProject = projects.find(p => p.id === selectedProjectId) || projects[0];
 
-  const diskSkills: Record<string, string[]> = {
-    languages: ["TypeScript", "JavaScript", "Python", "SQL", "HTML5 & CSS3", "Bash Scripting"],
-    frontend: ["Next.js", "React.js", "Tailwind CSS", "Expo Mobile", "TanStack Query", "Framer Motion", "Shadcn UI"],
-    backend: ["Node.js", "Express.js", "FastAPI (Python)", "Socket.io (WebSockets)", "Drizzle ORM", "Mongoose ODM", "MongoDB", "PostgreSQL (Neon)", "Redis"],
-    tools: ["Docker", "Git / GitHub", "GitHub Webhooks & OAuth", "NumPy & SciPy", "Google Gemini & Vertex AI", "Resend Mailer", "Nginx"]
+  const diskSkills: Record<string, { title: string; installed: string[]; status: string }> = {
+    disk01: {
+      title: "INTERFACE ENGINE",
+      installed: ["React.js", "Next.js", "Tailwind CSS", "GSAP / Framer Motion"],
+      status: "PRODUCTION READY"
+    },
+    disk02: {
+      title: "INTELLIGENCE ENGINE",
+      installed: ["Google Gemini API", "LangChain & LlamaIndex", "Vector Databases & RAG", "Autonomous AI Agents"],
+      status: "RESEARCH ACTIVE"
+    },
+    disk03: {
+      title: "SERVER ENGINE",
+      installed: ["Node.js / Express", "FastAPI / Python", "MongoDB / PostgreSQL", "REST & WebSocket APIs"],
+      status: "ONLINE"
+    },
+    disk04: {
+      title: "UTILITY & INFRA ENGINE",
+      installed: ["Docker Containers", "Git / GitHub Webhooks", "Nginx & Server Configs", "Bash Script Automation"],
+      status: "ONLINE"
+    }
   };
 
   const handleLoadDisk = (diskId: string) => {
@@ -285,13 +424,8 @@ const experiences = [
   };
 
   const handleOpenBook = () => {
-    if (isUnlocking) return;
-    setIsUnlocking(true);
-    setTimeout(() => {
-      setIsBookOpen(true);
-      setIsUnlocking(false);
-      setCurrentPage(0);
-    }, 650);
+    if (isUnlocking || isBooting) return;
+    startBootSequence();
   };
 
   const handleSelectProject = (id: string) => {
@@ -427,7 +561,7 @@ const experiences = [
                 x: "-30%",
                 transition: { duration: 0.7, ease: [0.25, 1, 0.5, 1] } 
               }}
-              whileHover={isUnlocking || bookLocked ? {} : { 
+              whileHover={isUnlocking || bookLocked || isBooting ? {} : { 
                 scale: 1.04, 
                 rotate: 0.5, 
                 y: -10, 
@@ -435,41 +569,101 @@ const experiences = [
               }}
               onClick={bookLocked ? handleLockedCoverClick : handleOpenBook}
               style={{ transformOrigin: "left center", cursor: bookLocked ? "not-allowed" : "pointer" }}
-              className="w-full max-w-[500px] h-[600px] bg-[#221c18] border-[12px] border-[#13100e] rounded-l-md rounded-r-3xl shadow-2xl flex flex-col justify-between p-8 text-center transition-shadow duration-300 relative group"
+              className="w-full max-w-[500px] h-[600px] bg-[#221c18] border-[12px] border-[#13100e] rounded-l-md rounded-r-3xl shadow-2xl flex flex-col justify-between p-8 text-center transition-shadow duration-300 relative group overflow-hidden"
             >
               <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_30%,rgba(0,0,0,0.4))] pointer-events-none" />
               <div className="absolute left-0 top-0 bottom-0 w-8 bg-[#13100e] border-r-2 border-[#ff5a46]/20 shadow-inner" />
 
-              {/* Cover Sticker */}
-              <div className="mt-16 bg-[#fcfbe3] p-6 border-4 border-dashed border-[#d35442]/60 rounded-xl rotate-[-2deg] shadow-lg max-w-[360px] mx-auto relative group-hover:rotate-[1deg] transition-transform duration-300">
-                <h1 className="text-4xl sm:text-5xl font-marker text-[#d35442] mb-2">Jenish J</h1>
-                <p className="font-hand-kalam text-xl text-slate-800 font-bold border-t border-[#d35442]/20 pt-2 uppercase tracking-wide">
-                  inventor's logbook
-                </p>
-                <div className="absolute -top-3 -left-3 text-3xl">⚙️</div>
-                <div className="absolute -bottom-3 -right-3 text-3xl">🔋</div>
-              </div>
-
-              {/* Tape Sticker */}
-              <div className="tape w-32 h-6 rotate-[6deg] mx-auto mt-6 z-10 text-[10px] font-mono text-slate-900 font-bold flex items-center justify-center bg-white/90 shadow-sm">
-                SYSTEM LAB FILE
-              </div>
-
-              <div className="mb-10 text-cream-light space-y-4">
-                <motion.p 
-                  animate={{ scale: [1, 1.04, 1], opacity: [0.8, 1, 0.8] }}
-                  transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-                  className="font-hand-kalam text-xl"
-                  style={{ color: "#f6c860", textShadow: "0 0 12px rgba(246,200,96,0.3)" }}
-                >
-                  {bookLocked ? "use the key to unlock ✦" : "tap to open ⚙️"}
-                </motion.p>
-                <div className="flex justify-center items-center gap-1 font-hand-kalam text-sm select-none" style={{ color: "rgba(230,207,162,0.55)" }}>
-                  <span>( {bookLocked ? "find the key" : "initialize"}</span>
-                  <motion.span animate={{ x: [0, 4, 0] }} transition={{ duration: 1, repeat: Infinity }}>➔</motion.span>
-                  <span>)</span>
+              {isBooting ? (
+                <div className="flex-1 flex flex-col justify-between bg-black text-[#4ade80] font-mono text-left p-6 rounded border-4 border-slate-800 shadow-inner overflow-hidden relative my-4">
+                  <div className="screen-glare absolute inset-0 pointer-events-none" />
+                  <div className="space-y-2 z-10 text-sm">
+                    {bootLines.map((line, idx) => (
+                      <motion.p
+                        key={idx}
+                        initial={{ opacity: 0, x: -10 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ duration: 0.15 }}
+                        className={line === "Welcome Researcher." ? "text-yellow-400 font-bold" : ""}
+                      >
+                        &gt; {line}
+                      </motion.p>
+                    ))}
+                    <motion.span
+                      animate={{ opacity: [1, 0, 1] }}
+                      transition={{ duration: 0.8, repeat: Infinity }}
+                      className="inline-block text-[#4ade80] font-bold"
+                    >
+                      _
+                    </motion.span>
+                  </div>
+                  <div className="text-[8px] text-slate-500 border-t border-slate-950 pt-2 flex justify-between z-10 font-bold tracking-wider font-mono">
+                    <span>ARCHIVE BOOT v2.027</span>
+                    <span>JENISH J SYSTEMS</span>
+                  </div>
                 </div>
-              </div>
+              ) : (
+                <>
+                  {/* Case File Sticker */}
+                  <div className="absolute top-4 left-10 bg-red-600/90 text-white font-mono text-[9px] font-bold px-3 py-1 shadow rounded-sm uppercase tracking-widest rotate-[-4deg] z-10 border border-red-700 select-none">
+                    ENGINEERING ARCHIVE · CASE FILE: J-2027
+                  </div>
+
+                  {/* Cover Sticker */}
+                  <div className="mt-12 bg-[#fcfbe3] p-5 border-4 border-dashed border-[#d35442]/60 rounded-xl rotate-[-2deg] shadow-lg max-w-[360px] mx-auto relative group-hover:rotate-[1deg] transition-transform duration-300 select-none">
+                    <h1 className="text-4xl sm:text-5xl font-marker text-[#d35442] mb-1">JENISH J</h1>
+                    <p className="font-hand-kalam text-lg text-slate-800 font-bold border-t border-[#d35442]/20 pt-1.5 uppercase tracking-wide leading-tight">
+                      engineering field journal
+                    </p>
+                    <p className="font-hand-kalam text-[10px] text-slate-500 font-bold tracking-widest mt-0.5">
+                      AI SYSTEMS ENGINEER · VOL: 2023 - 2027
+                    </p>
+                    <div className="absolute -top-3 -left-3 text-2xl">⚙️</div>
+                    <div className="absolute -bottom-3 -right-3 text-2xl">🔋</div>
+                  </div>
+
+                  {/* Metadata Table */}
+                  <div className="bg-white/5 border border-white/10 p-3 rounded shadow-sm text-cream-light/90 font-mono text-[10px] text-left max-w-[340px] mx-auto space-y-1.5 rotate-[1deg] backdrop-blur-sm select-none">
+                    <div className="flex justify-between border-b border-white/5 pb-1">
+                      <span className="text-slate-400">Experiments Completed:</span>
+                      <span className="font-bold">10+</span>
+                    </div>
+                    <div className="flex justify-between border-b border-white/5 pb-1">
+                      <span className="text-slate-400">Systems Built:</span>
+                      <span className="font-bold">8+</span>
+                    </div>
+                    <div className="flex justify-between border-b border-white/5 pb-1">
+                      <span className="text-slate-400">Primary Research:</span>
+                      <span className="font-bold">Human × AI Interaction</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-slate-400">Status:</span>
+                      <span className="text-emerald-400 font-bold animate-pulse">ACTIVE BUILDER</span>
+                    </div>
+                  </div>
+
+                  {/* Tape Sticker */}
+                  <div className="tape w-32 h-6 rotate-[6deg] mx-auto mt-2 z-10 text-[9px] font-mono text-slate-900 font-bold flex items-center justify-center bg-white/90 shadow-sm border border-slate-300/30 select-none">
+                    SYSTEM LAB FILE
+                  </div>
+
+                  <div className="mb-4 text-cream-light space-y-3 select-none">
+                    <motion.p 
+                      animate={{ scale: [1, 1.04, 1], opacity: [0.8, 1, 0.8] }}
+                      transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+                      className="font-hand-kalam text-lg"
+                      style={{ color: "#f6c860", textShadow: "0 0 12px rgba(246,200,96,0.3)" }}
+                    >
+                      {bookLocked ? "use the key to unlock ✦" : "tap to open ⚙️"}
+                    </motion.p>
+                    <div className="flex justify-center items-center gap-1 font-hand-kalam text-xs select-none" style={{ color: "rgba(230,207,162,0.55)" }}>
+                      <span>( {bookLocked ? "find the key" : "initialize"}</span>
+                      <motion.span animate={{ x: [0, 4, 0] }} transition={{ duration: 1, repeat: Infinity }}>➔</motion.span>
+                      <span>)</span>
+                    </div>
+                  </div>
+                </>
+              )}
             </motion.div>
             {/* Floating Key — only shown while book is locked */}
             {bookLocked && (
@@ -505,50 +699,51 @@ const experiences = [
                 <div className="flex-1 flex flex-col justify-between relative z-10">
                   
                   {/* SPREAD 0: Brain Nodes Blueprint */}
+                  {/* SPREAD 0: Researcher Manifesto */}
                   {currentPage === 0 && (
-                    <div className="space-y-4">
+                    <div className="space-y-5 font-hand-kalam text-slate-800 relative select-none">
                       <div className="border-b-2 border-dashed border-[#d35442]/20 pb-2">
-                        <h2 className="text-3xl font-marker text-[#d35442] mb-0.5">mindset blueprint</h2>
-                        <p className="font-hand-kalam text-xs text-slate-800 font-bold uppercase tracking-wider">hover nodes to decode brain</p>
+                        <h2 className="text-3.5xl font-marker text-[#d35442] mb-0.5 uppercase tracking-wide">my manifesto</h2>
+                        <p className="text-xs text-slate-500 font-mono uppercase tracking-wider font-bold">research focus & engineering ethos</p>
                       </div>
 
-                      {/* Interactive SVG Network Map */}
-                      <div className="relative w-full h-48 border border-slate-400/20 bg-white/40 rounded flex items-center justify-center p-2 shadow-inner">
-                        <svg className="w-full h-full overflow-visible" viewBox="0 0 200 120">
-                          {/* Connections */}
-                          <line x1="100" y1="20" x2="40" y2="70" stroke="#d35442" strokeWidth="1.5" strokeDasharray="3 3" />
-                          <line x1="100" y1="20" x2="160" y2="70" stroke="#d35442" strokeWidth="1.5" strokeDasharray="3 3" />
-                          <line x1="40" y1="70" x2="100" y2="100" stroke="#d35442" strokeWidth="1.5" strokeDasharray="3 3" />
-                          <line x1="160" y1="70" x2="100" y2="100" stroke="#d35442" strokeWidth="1.5" strokeDasharray="3 3" />
-                          <line x1="100" y1="20" x2="100" y2="100" stroke="#d35442" strokeWidth="1.5" className="opacity-30" />
+                      <div className="space-y-4">
+                        <p className="text-base font-bold italic leading-relaxed text-[#d35442] border-l-4 border-[#d35442] pl-3">
+                          "I build intelligent systems that remove repetitive human workflows."
+                        </p>
 
-                          {/* Nodes */}
-                          <circle cx="100" cy="20" r="10" fill="#d35442" className="cursor-pointer hover:scale-125 transition-transform" onMouseEnter={() => setActiveBrainNode("manifesto")} />
-                          <circle cx="40" cy="70" r="10" fill="#88c5f7" className="cursor-pointer hover:scale-125 transition-transform" onMouseEnter={() => setActiveBrainNode("friction")} />
-                          <circle cx="160" cy="70" r="10" fill="#a259ff" className="cursor-pointer hover:scale-125 transition-transform" onMouseEnter={() => setActiveBrainNode("ai")} />
-                          <circle cx="100" cy="100" r="10" fill="#fbc67b" className="cursor-pointer hover:scale-125 transition-transform" onMouseEnter={() => setActiveBrainNode("tactile")} />
-
-                          <text x="100" y="36" textAnchor="middle" fontSize="7" className="font-mono fill-slate-700 font-bold select-none">MANIFESTO</text>
-                          <text x="40" y="86" textAnchor="middle" fontSize="7" className="font-mono fill-slate-700 font-bold select-none">FRICTION</text>
-                          <text x="160" y="86" textAnchor="middle" fontSize="7" className="font-mono fill-slate-700 font-bold select-none">INTELLIGENCE</text>
-                          <text x="100" y="114" textAnchor="middle" fontSize="7" className="font-mono fill-slate-700 font-bold select-none">TACTILE</text>
-                        </svg>
+                        <div className="space-y-2.5">
+                          <p className="font-mono text-xs font-bold uppercase tracking-wider text-slate-500 border-b border-slate-300 pb-1 mb-2">
+                            Current Research Areas:
+                          </p>
+                          <div className="flex gap-3 items-start bg-white/40 p-2 rounded shadow-sm border border-slate-200">
+                            <span className="font-mono font-bold text-xs bg-[#d35442] text-white rounded px-1.5 py-0.5 leading-none mt-0.5">01</span>
+                            <div>
+                              <p className="font-bold text-slate-900 leading-tight">AI Powered Automation</p>
+                              <p className="text-xs text-slate-600">Autonomous workflow orchestration & task execution layers.</p>
+                            </div>
+                          </div>
+                          <div className="flex gap-3 items-start bg-white/40 p-2 rounded shadow-sm border border-slate-200">
+                            <span className="font-mono font-bold text-xs bg-[#88c5f7] text-slate-800 rounded px-1.5 py-0.5 leading-none mt-0.5">02</span>
+                            <div>
+                              <p className="font-bold text-slate-900 leading-tight">Knowledge Retrieval Systems</p>
+                              <p className="text-xs text-slate-600">RAG architectures, semantic vector spaces, & context ingestion pipelines.</p>
+                            </div>
+                          </div>
+                          <div className="flex gap-3 items-start bg-white/40 p-2 rounded shadow-sm border border-slate-200">
+                            <span className="font-mono font-bold text-xs bg-[#a259ff]/30 text-[#a259ff] rounded px-1.5 py-0.5 leading-none mt-0.5">03</span>
+                            <div>
+                              <p className="font-bold text-slate-900 leading-tight">Developer Productivity Tools</p>
+                              <p className="text-xs text-slate-600">CLI code analyzers, AST rule checking, & auto-remediation agents.</p>
+                            </div>
+                          </div>
+                        </div>
                       </div>
 
-                      {/* Display text based on hovered node */}
-                      <div className="bg-white/60 border border-slate-300 rounded p-3 h-[180px] shadow-sm font-hand-kalam text-slate-800 leading-snug flex flex-col justify-center text-center">
-                        {activeBrainNode === "manifesto" && (
-                          <p className="text-sm"><b>MANIFESTO</b>: "I build smart systems that automate tedious bottlenecks so builders can think bigger."</p>
-                        )}
-                        {activeBrainNode === "friction" && (
-                          <p className="text-sm"><b>SOLVE FRICTION</b>: "repetitive work is a bug. codesentry and HireMindAI were built directly to solve developer and hiring pipelines bottlenecks."</p>
-                        )}
-                        {activeBrainNode === "ai" && (
-                          <p className="text-sm"><b>AI INTELLIGENCE</b>: "AI models shouldn't reside inside sterile chatbot frames. They must be woven directly into terminal workflows and science sandboxes (OncoEnv)."</p>
-                        )}
-                        {activeBrainNode === "tactile" && (
-                          <p className="text-sm"><b>TACTILE MECHANICS</b>: "A digital workspace should feel real. Draggable cards, clickable slots, and spinning cassettes are what make code memorable."</p>
-                        )}
+                      <div className="pt-2 border-t border-[#d35442]/10 select-none">
+                        <p className="text-xs font-mono font-bold text-slate-700 italic">
+                          Mission: Build software that solves real friction, not just beautiful interfaces.
+                        </p>
                       </div>
                     </div>
                   )}
@@ -557,17 +752,17 @@ const experiences = [
                   {currentPage === 1 && (
                     <div className="space-y-4">
                       <div className="border-b-2 border-dashed border-[#d35442]/20 pb-2">
-                        <h2 className="text-3xl font-marker text-[#d35442] mb-0.5">disk catalog</h2>
-                        <p className="font-hand-kalam text-xs text-slate-800 font-bold uppercase tracking-wider">select a disk to insert in reader</p>
+                        <h2 className="text-3xl font-marker text-[#d35442] mb-0.5">SYSTEM MODULE ARCHIVE</h2>
+                        <p className="font-hand-kalam text-xs text-slate-800 font-bold uppercase tracking-wider">Insert capability disk to inspect engineer modules</p>
                       </div>
 
                       {/* Disk catalog list */}
                       <div className="grid grid-cols-2 gap-4 pt-4">
                         {[
-                          { id: "languages", label: "Languages", color: "bg-blue-600 border-blue-800" },
-                          { id: "frontend", label: "Frontend", color: "bg-purple-600 border-purple-800" },
-                          { id: "backend", label: "Backend", color: "bg-emerald-600 border-emerald-800" },
-                          { id: "tools", label: "Tools", color: "bg-orange-600 border-orange-800" }
+                          { id: "disk01", label: "Interface Engine", color: "bg-blue-600 border-blue-800" },
+                          { id: "disk02", label: "Intelligence Engine", color: "bg-purple-600 border-purple-800" },
+                          { id: "disk03", label: "Server Engine", color: "bg-emerald-600 border-emerald-800" },
+                          { id: "disk04", label: "Utility Engine", color: "bg-orange-600 border-orange-800" }
                         ].map(disk => (
                           <div 
                             key={disk.id}
@@ -591,7 +786,7 @@ const experiences = [
                   {currentPage === 2 && (
                     <div className="space-y-3">
                       <h2 className="text-3xl font-marker text-[#d35442] border-b-2 border-dashed border-[#d35442]/20 pb-1.5 select-none">
-                        project deck
+                        EXPERIMENT ARCHIVES
                       </h2>
                       <p className="font-hand-kalam text-xs text-slate-600 mb-1 select-none">select a cassette to spin in the deck:</p>
 
@@ -619,32 +814,77 @@ const experiences = [
                     </div>
                   )}
 
-                  {/* SPREAD 3: Experience Timeline */}
+                  {/* SPREAD 3: System Blueprint Room Selector */}
                   {currentPage === 3 && (
-                    <div className="space-y-6">
-                      <div className="border-b-2 border-dashed border-[#d35442]/20 pb-4">
-                        <h2 className="text-4xl font-marker text-[#d35442] mb-1">internships</h2>
-                        <p className="font-hand-kalam text-lg text-slate-800 font-bold uppercase tracking-wider">work & learnings ledger</p>
+                    <div className="space-y-5 select-none">
+                      <div className="border-b-2 border-dashed border-[#d35442]/20 pb-2">
+                        <h2 className="text-3.5xl font-marker text-[#d35442] mb-0.5">BLUEPRINT ROOM</h2>
+                        <p className="font-hand-kalam text-xs text-slate-800 font-bold uppercase tracking-wider">inspect engineering pipeline schematics</p>
                       </div>
 
-                      <div className="font-hand-kalam space-y-5 text-slate-800">
-                        {experiences.map(exp => (
-                          <div 
-                            key={exp.id} 
-                            onClick={() => setFlippedPolaroid(exp.id)}
-                            className="p-3 bg-white/40 border border-slate-300/30 rounded shadow-sm hover:bg-white/70 cursor-pointer transition-colors"
-                          >
-                            <p className="text-slate-950 font-bold text-lg leading-tight">{exp.role}</p>
-                            <p className="text-xs font-mono text-slate-500 mt-0.5">{exp.company} · {exp.duration}</p>
-                            <p className="text-xs text-red-500 font-bold mt-2 hover:underline">Tap to view Polaroid note ➔</p>
-                          </div>
-                        ))}
+                      <p className="font-hand-kalam text-sm text-slate-600 leading-snug">
+                        Select an architectural drawing drawer to inspect the system flow layout on the active blueprint draft pad:
+                      </p>
+
+                      <div className="space-y-3 font-hand-kalam text-slate-800 pt-2">
+                        {[
+                          { id: "hiremind", title: "01 HireMind AI Pipeline", desc: "ATS voice & screening scoring orchestration loop." },
+                          { id: "codesentry", title: "02 codesentry Core Engine", desc: "Local AST parser security rule matching hook." },
+                          { id: "oncoenv", title: "03 OncoEnv Reinforcement Loop", desc: "Procedural genomic matrix environment action scoring." }
+                        ].map(bp => {
+                          const isSelected = selectedBlueprint === bp.id;
+                          return (
+                            <div
+                              key={bp.id}
+                              onClick={() => setSelectedBlueprint(bp.id)}
+                              className={`p-3 rounded border border-slate-350 shadow-sm cursor-pointer transition-all ${
+                                isSelected 
+                                  ? "bg-[#e7d7c1] border-[#d35442] text-slate-800 font-bold scale-[1.01]" 
+                                  : "bg-white/50 hover:bg-[#e7d7c1]/20 text-slate-700 hover:scale-[1.005]"
+                              }`}
+                            >
+                              <p className="text-sm font-bold text-slate-900">{bp.title}</p>
+                              <p className="text-xs text-slate-500 font-mono mt-0.5">{bp.desc}</p>
+                            </div>
+                          );
+                        })}
                       </div>
                     </div>
                   )}
 
-                  {/* SPREAD 4: Connect Alignments */}
+                  {/* SPREAD 4: Experience Timeline */}
                   {currentPage === 4 && (
+                    <div className="space-y-6 select-none">
+                      <div className="border-b-2 border-dashed border-[#d35442]/20 pb-4">
+                        <h2 className="text-4xl font-marker text-[#d35442] mb-1">FIELD RESEARCH LOGS</h2>
+                        <p className="font-hand-kalam text-lg text-slate-800 font-bold uppercase tracking-wider">work & learnings ledger</p>
+                      </div>
+
+                      <div className="font-hand-kalam space-y-4 text-slate-800">
+                        {experiences.map((exp, idx) => {
+                          const tilts = ["rotate-[-1.5deg]", "rotate-[1deg]", "rotate-[-0.5deg]"];
+                          const tilt = tilts[idx % tilts.length];
+                          return (
+                            <div 
+                              key={exp.id} 
+                              onClick={() => setFlippedPolaroid(exp.id)}
+                              className={`p-3 bg-white/80 border border-slate-350 shadow-sm hover:shadow-md cursor-pointer transition-all relative ${tilt} rounded`}
+                            >
+                              {/* Tape chunk decoration */}
+                              <div className="absolute -top-2 left-1/4 w-12 h-4 bg-white/40 shadow-sm border border-slate-400/5 rotate-[-2deg]" />
+                              
+                              <p className="text-slate-950 font-bold text-base leading-tight">{exp.role}</p>
+                              <p className="text-[10px] font-mono text-slate-500 mt-0.5">{exp.company} · {exp.duration}</p>
+                              <p className="text-[9px] text-[#d35442] font-bold mt-1.5 uppercase tracking-wide">inspect notes ➔</p>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* SPREAD 5: Connect Alignments */}
+                  {currentPage === 5 && (
                     <div className="space-y-5">
                       <div className="border-b-2 border-dashed border-[#d35442]/20 pb-2">
                         <h2 className="text-3xl font-marker text-[#d35442] mb-1">alignments</h2>
@@ -700,54 +940,104 @@ const experiences = [
                 
                 <div className="flex-1 flex flex-col justify-center">
                   
-                  {/* SPREAD 0: Manifesto Details */}
+                  {/* SPREAD 0: Mindset Blueprint (Engineer Brain Map) */}
                   {currentPage === 0 && (
-                    <div className="space-y-4 font-hand-kalam text-slate-800 relative">
-                      <h3 className="text-3xl font-marker text-[#d35442] border-b pb-1 select-none">my manifesto</h3>
-                      
-                      <div className="space-y-3 text-sm leading-relaxed">
-                        <p>
-                          I don't just write code; I design systems that take over the repetitive parts of my day so I can spend more time thinking about new ideas.
-                        </p>
-                        
-                        <div className="p-3 bg-white/40 border rounded shadow-sm">
-                          <p className="font-bold text-[#d35442] text-sm">1. Solve Real Friction 🛠:</p>
-                          <p className="text-slate-700 mt-1 pl-2 border-l border-slate-400">
-                            I only build tools that solve practical bottlenecks (e.g. <b>codesentry</b> scanning AI code for leaks, <b>HireMindAI</b> automating ATS workflows).
-                          </p>
-                        </div>
-
-                        <div className="p-3 bg-white/40 border rounded shadow-sm">
-                          <p className="font-bold text-[#d35442] text-sm">2. Tactile Feedback 🖱:</p>
-                          <p className="text-slate-700 mt-1 pl-2 border-l border-slate-400">
-                            A portfolio should feel like exploring someone's desk. If it doesn't click, hover, or react with physical intent, it's not finished.
-                          </p>
-                        </div>
-
-                        <div className="p-3 bg-white/40 border rounded shadow-sm">
-                          <p className="font-bold text-[#d35442] text-sm">3. Human-Centric AI 🧠:</p>
-                          <p className="text-slate-700 mt-1 pl-2 border-l border-slate-400">
-                            AI shouldn't be a generic chat box. It should be a workspace companion integrated directly into developer tools.
-                          </p>
-                        </div>
+                    <div className="space-y-4 font-hand-kalam text-slate-800 relative flex flex-col justify-between h-full select-none">
+                      <div className="border-b-2 border-dashed border-[#d35442]/20 pb-1.5">
+                        <h3 className="text-3xl font-marker text-[#d35442] mb-0.5 uppercase tracking-wide">engineer brain map</h3>
+                        <p className="font-mono text-[9px] text-slate-500 uppercase tracking-widest font-bold">hover nodes to scan technical stack</p>
                       </div>
 
-                      {/* Draggable Sticky note for human touch */}
-                      <motion.div
-                        drag
-                        dragConstraints={constraintsRef}
-                        dragElastic={0.15}
-                        whileDrag={{ scale: 1.05, zIndex: 100 }}
-                        whileHover={{ rotate: 1, scale: 1.02 }}
-                        className="absolute bottom-[-20px] right-[-10px] w-40 bg-[#fced88] border border-yellow-300 p-3 shadow-md rounded rotate-[-4deg] cursor-grab active:cursor-grabbing text-slate-800 text-[10px] leading-tight select-none hidden sm:block z-30"
-                      >
-                        <div className="absolute -top-2 left-1/2 -translate-x-1/2 w-8 h-3.5 bg-white/40 shadow-sm" />
-                        <p className="font-bold border-b border-slate-400/50 pb-0.5 mb-1.5 uppercase text-[8px] text-[#d35442]">desk log 📝</p>
-                        <p>• Setup: Keychron Q2 Browns</p>
-                        <p>• Coffee: 3 cups today ☕</p>
-                        <p>• Obsession: RL bio simulations</p>
-                        <p className="text-[7px] text-slate-500 mt-1 italic text-center">(Drag me anywhere!)</p>
-                      </motion.div>
+                      {/* Interactive SVG Network Map */}
+                      <div className="relative w-full h-52 border border-slate-300 bg-white/50 rounded flex items-center justify-center p-2 shadow-inner">
+                        <svg className="w-full h-full overflow-visible" viewBox="0 0 200 130">
+                          {/* Connections */}
+                          <line x1="100" y1="18" x2="100" y2="65" stroke="#94a3b8" strokeWidth="2" strokeDasharray="3 3" />
+                          <line x1="100" y1="65" x2="100" y2="112" stroke="#94a3b8" strokeWidth="2" strokeDasharray="3 3" />
+                          <line x1="35" y1="65" x2="100" y2="65" stroke="#94a3b8" strokeWidth="2" strokeDasharray="3 3" />
+                          <line x1="165" y1="65" x2="100" y2="65" stroke="#94a3b8" strokeWidth="2" strokeDasharray="3 3" />
+
+                          {/* Outer node link details */}
+                          <line x1="100" y1="18" x2="35" y2="65" stroke="#d35442" strokeWidth="1" opacity="0.25" />
+                          <line x1="100" y1="18" x2="165" y2="65" stroke="#d35442" strokeWidth="1" opacity="0.25" />
+                          <line x1="100" y1="112" x2="35" y2="65" stroke="#d35442" strokeWidth="1" opacity="0.25" />
+                          <line x1="100" y1="112" x2="165" y2="65" stroke="#d35442" strokeWidth="1" opacity="0.25" />
+
+                          {/* Center Node (ENGINEERING CORE) */}
+                          <circle cx="100" cy="65" r="13" className="fill-[#e2cfb6] stroke-slate-800 stroke-[1.5] cursor-pointer hover:scale-110 transition-transform" onMouseEnter={() => setActiveBrainNode("core")} />
+                          <text x="100" y="68" textAnchor="middle" fontSize="6.5" className="font-mono fill-slate-800 font-extrabold select-none pointer-events-none">CORE</text>
+
+                          {/* Top Node (AI SYSTEMS) */}
+                          <circle cx="100" cy="18" r="13" className="fill-purple-300 stroke-purple-700 stroke-[1.5] cursor-pointer hover:scale-110 transition-transform" onMouseEnter={() => setActiveBrainNode("ai")} />
+                          <text x="100" y="21" textAnchor="middle" fontSize="6.5" className="font-mono fill-purple-950 font-extrabold select-none pointer-events-none">AI</text>
+
+                          {/* Left Node (FRONTEND) */}
+                          <circle cx="35" cy="65" r="13" className="fill-blue-200 stroke-blue-600 stroke-[1.5] cursor-pointer hover:scale-110 transition-transform" onMouseEnter={() => setActiveBrainNode("frontend")} />
+                          <text x="35" y="68" textAnchor="middle" fontSize="6.5" className="font-mono fill-blue-950 font-extrabold select-none pointer-events-none">FRONT</text>
+
+                          {/* Right Node (BACKEND) */}
+                          <circle cx="165" cy="65" r="13" className="fill-emerald-200 stroke-emerald-600 stroke-[1.5] cursor-pointer hover:scale-110 transition-transform" onMouseEnter={() => setActiveBrainNode("backend")} />
+                          <text x="165" y="68" textAnchor="middle" fontSize="6.5" className="font-mono fill-emerald-950 font-extrabold select-none pointer-events-none">BACK</text>
+
+                          {/* Bottom Node (PRODUCT THINKING) */}
+                          <circle cx="100" cy="112" r="13" className="fill-orange-200 stroke-orange-500 stroke-[1.5] cursor-pointer hover:scale-110 transition-transform" onMouseEnter={() => setActiveBrainNode("product")} />
+                          <text x="100" y="115" textAnchor="middle" fontSize="6.5" className="font-mono fill-orange-950 font-extrabold select-none pointer-events-none">PROD</text>
+
+                          {/* Labels */}
+                          <text x="100" y="37" textAnchor="middle" fontSize="6" className="font-mono fill-purple-800 font-bold">AI SYSTEMS</text>
+                          <text x="35" y="84" textAnchor="middle" fontSize="6" className="font-mono fill-blue-800 font-bold">FRONTEND</text>
+                          <text x="165" y="84" textAnchor="middle" fontSize="6" className="font-mono fill-emerald-800 font-bold">BACKEND</text>
+                          <text x="100" y="94" textAnchor="middle" fontSize="6" className="font-mono fill-slate-700 font-bold">ENGINEERING CORE</text>
+                          <text x="100" y="129" textAnchor="middle" fontSize="6" className="font-mono fill-orange-700 font-bold">PRODUCT THINKING</text>
+                        </svg>
+                      </div>
+
+                      {/* Display text based on hovered node inside taped note */}
+                      <div className="bg-[#fcfbe3] border border-slate-300 rounded p-3 h-[120px] shadow-sm font-hand-kalam text-slate-800 leading-snug flex flex-col justify-center text-center relative rotate-[0.5deg]">
+                        <div className="absolute -top-2.5 left-1/2 -translate-x-1/2 w-14 h-4 bg-white/40 shadow-sm border border-slate-400/10 rotate-[-1deg]" />
+                        
+                        {activeBrainNode === "manifesto" && (
+                          <div>
+                            <p className="text-[10px] font-mono text-slate-400 uppercase tracking-widest font-bold">System Initialization</p>
+                            <p className="text-sm mt-1">Hover the graph nodes to inspect cognitive stacks and engineering competencies.</p>
+                          </div>
+                        )}
+                        {activeBrainNode === "frontend" && (
+                          <div>
+                            <p className="text-[10px] font-mono text-blue-500 uppercase tracking-widest font-bold">FRONTEND MODULES</p>
+                            <p className="text-base text-slate-800 font-bold mt-0.5">React · Next.js · UI Engineering · Animation Systems</p>
+                            <p className="text-xs text-slate-500 mt-1 font-mono">Building tactile, highly-interactive scrapbook and dashboard environments.</p>
+                          </div>
+                        )}
+                        {activeBrainNode === "backend" && (
+                          <div>
+                            <p className="text-[10px] font-mono text-emerald-600 uppercase tracking-widest font-bold">BACKEND MODULES</p>
+                            <p className="text-base text-slate-800 font-bold mt-0.5">Node.js · Express · REST APIs · Databases (Postgres/Mongo)</p>
+                            <p className="text-xs text-slate-500 mt-1 font-mono">Designing high-throughput async processing layers and secure schema definitions.</p>
+                          </div>
+                        )}
+                        {activeBrainNode === "ai" && (
+                          <div>
+                            <p className="text-[10px] font-mono text-purple-600 uppercase tracking-widest font-bold">INTELLIGENCE MODULES</p>
+                            <p className="text-base text-slate-800 font-bold mt-0.5">LLMs (Gemini/Vertex) · RAG Pipelines · AI Agents · Automation</p>
+                            <p className="text-xs text-slate-500 mt-1 font-mono">Integrating vector database semantics and orchestrating autonomous task execution agents.</p>
+                          </div>
+                        )}
+                        {activeBrainNode === "core" && (
+                          <div>
+                            <p className="text-[10px] font-mono text-slate-600 uppercase tracking-widest font-bold">ENGINEERING CORE</p>
+                            <p className="text-base text-slate-800 font-bold mt-0.5">System Design · Testing & CI/CD · TypeScript · Algorithms · Docker</p>
+                            <p className="text-xs text-slate-500 mt-1 font-mono">Constructing performant, robust, containerized pipelines and maintainable repos.</p>
+                          </div>
+                        )}
+                        {activeBrainNode === "product" && (
+                          <div>
+                            <p className="text-[10px] font-mono text-orange-600 uppercase tracking-widest font-bold">PRODUCT THINKING</p>
+                            <p className="text-base text-slate-800 font-bold mt-0.5">UX Thinking · Problem Solving · Architecture Design · Flows</p>
+                            <p className="text-xs text-slate-500 mt-1 font-mono">Bridging visual aesthetics with structural engineering loops for friction-free products.</p>
+                          </div>
+                        )}
+                      </div>
                     </div>
                   )}
 
@@ -775,7 +1065,7 @@ const experiences = [
                       </div>
 
                       {/* Display Screen */}
-                      <div className="bg-black rounded-lg p-4 h-[240px] border-4 border-slate-800 shadow-inner font-mono text-xs text-[#4ade80] max-w-[420px] mx-auto flex flex-col justify-between relative overflow-hidden select-text">
+                      <div className="bg-black rounded-lg p-4 h-[255px] border-4 border-slate-800 shadow-inner font-mono text-xs text-[#4ade80] max-w-[420px] mx-auto flex flex-col justify-between relative overflow-hidden select-text">
                         <div className="screen-glare absolute inset-0 z-10 pointer-events-none" />
                         
                         <div className="relative z-20 space-y-2">
@@ -784,32 +1074,39 @@ const experiences = [
                           )}
                           
                           {diskLoadingState === "loading" && (
-                            <div className="space-y-1">
+                            <div className="space-y-1.5">
                               <p>BOOT DIAGNOSTICS: INITIALIZING...</p>
-                              <p>MOUNTING DRIVE: OK [3.5" HD]</p>
-                              <p className="text-yellow-400">READING FILE BLOCKS... [PLEASE WAIT]</p>
+                              <p className="text-slate-400">&gt; Analyzing module...</p>
+                              <p className="text-yellow-400">&gt; Dependencies found...</p>
+                              <p className="text-emerald-400 font-bold">&gt; System ready.</p>
                             </div>
                           )}
 
                           {diskLoadingState === "loaded" && loadedDisk && (
-                            <div className="space-y-1.5">
-                              <p className="text-[#a259ff] font-bold">SYSTEM DIAGNOSTIC: {loadedDisk.toUpperCase()} DISK LOADED</p>
-                              <p className="text-slate-400">------------------------------------</p>
-                              {diskSkills[loadedDisk].map((skill, i) => (
-                                <p key={i} className="flex justify-between">
-                                  <span>&gt; {skill}</span>
-                                  <span className="text-cream-light font-bold">ONLINE</span>
+                            <div className="space-y-1 text-[11px] leading-relaxed">
+                              <p className="text-yellow-400 font-bold uppercase">&gt;&gt; MODULE: {diskSkills[loadedDisk].title}</p>
+                              <p className="text-slate-500">------------------------------------</p>
+                              <p className="text-[#a259ff] font-bold">INSTALLED LIBRARIES:</p>
+                              {diskSkills[loadedDisk].installed.map((skill, i) => (
+                                <p key={i} className="flex justify-between pl-2 font-semibold">
+                                  <span>+ {skill}</span>
+                                  <span className="text-[#4ade80] font-bold">[READY]</span>
                                 </p>
                               ))}
-                              <p className="text-slate-400">------------------------------------</p>
-                              <p className="text-xs text-yellow-400 font-bold">STATUS: OK [100% READY TO COMPILE]</p>
+                              <p className="text-slate-500">------------------------------------</p>
+                              <p className="text-xs text-yellow-400 font-bold flex justify-between items-center mt-1">
+                                <span>STATUS CODE:</span>
+                                <span className="text-emerald-400 animate-pulse font-extrabold bg-emerald-950/40 px-1 border border-emerald-800 rounded">
+                                  {diskSkills[loadedDisk].status}
+                                </span>
+                              </p>
                             </div>
                           )}
                         </div>
 
                         {diskLoadingState === "loaded" && (
-                          <div className="text-[8px] text-slate-500 border-t border-slate-800 pt-2 flex justify-between select-none">
-                            <span>Diagnostic v1.42</span>
+                          <div className="text-[8px] text-slate-500 border-t border-slate-900 pt-2 flex justify-between select-none font-bold">
+                            <span>Diagnostic v2.027</span>
                             <span>Jenish J Console</span>
                           </div>
                         )}
@@ -852,104 +1149,242 @@ const experiences = [
 
                       {/* Display active project diagnostic view */}
                       <div className="w-full">
-                        {selectedProject.type === "monitor" && (
-                          <div className="bg-slate-400 p-4 rounded-xl shadow-md border-b-4 border-r-4 border-slate-500 relative max-w-[480px] mx-auto select-text">
-                            <div className="bg-black rounded p-3 h-[240px] relative overflow-hidden border-2 border-slate-800 shadow-inner">
-                              <div className="screen-glare absolute inset-0 pointer-events-none" />
-                              <InteractiveTerminal />
-                            </div>
-                            
-                            <div className="mt-3 pt-2 border-t border-slate-500/20">
-                              <p className="font-mono text-[9px] text-slate-200 font-bold select-none">🛠 Tech Stack:</p>
-                              <div className="flex flex-wrap gap-1 mt-1 select-none">
-                                {selectedProject.stack.map(tag => (
-                                  <span key={tag} className="text-[8.5px] text-[#4ade80] bg-slate-800 px-1.5 py-0.5 rounded shadow-sm border border-slate-700 font-mono">
-                                    {tag}
-                                  </span>
-                                ))}
-                              </div>
-                            </div>
-                          </div>
-                        )}
-
-                        {selectedProject.type === "sandbox" && (
-                          <div className="bg-[#f0e6d2] border-4 border-[#d35442]/80 rounded-xl shadow-md p-4 relative paper-texture max-w-[480px] mx-auto select-text">
-                            <h3 className="text-xl font-marker text-[#d35442] mb-1">{selectedProject.title}</h3>
-                            <p className="font-hand-kalam text-sm text-slate-600 mb-3">{selectedProject.subtitle}</p>
-                            
-                            <div className="mb-2">
-                              <VaultSandbox />
+                        <div className="bg-[#fcfbe3] border-l-8 border-l-[#d35442] rounded-r-xl shadow-md p-5 relative paper-texture max-w-[480px] mx-auto min-h-[380px] flex flex-col justify-between select-text text-slate-800 font-hand-kalam">
+                          <div className="space-y-3">
+                            <div className="flex justify-between items-center border-b border-[#d35442]/20 pb-1 select-none">
+                              <span className="font-mono text-[9px] font-bold text-[#d35442] uppercase tracking-wider">EXPERIMENT ID: {selectedProject.experimentId}</span>
+                              <span className="text-[9px] bg-slate-200 text-slate-800 font-mono px-2 py-0.5 rounded font-extrabold uppercase">{selectedProject.status}</span>
                             </div>
 
-                            <div className="mt-3 select-none">
-                              <div className="flex flex-wrap gap-1">
-                                {selectedProject.stack.map(tag => (
-                                  <span key={tag} className="text-[10px] text-slate-800 bg-[#e7d7c1] px-2 py-0.5 rounded shadow-sm font-hand-kalam border border-black/10">
-                                    {tag}
-                                  </span>
-                                ))}
-                              </div>
-                            </div>
-                          </div>
-                        )}
-
-                        {selectedProject.type === "dossier" && (
-                          <div className="bg-[#fcfbe3] border-l-8 border-l-[#d35442] rounded-r-xl shadow-md p-5 relative paper-texture max-w-[480px] mx-auto min-h-[320px] flex flex-col justify-between select-text">
                             <div>
-                              <h3 className="text-2xl font-marker text-[#d35442] mb-0.5 select-none">{selectedProject.title}</h3>
-                              <p className="font-hand-kalam text-base text-slate-800 font-bold border-b border-[#d35442]/20 pb-1 mb-2">{selectedProject.subtitle}</p>
-                              <p className="font-hand-kalam text-sm text-slate-600 leading-snug mb-3 select-none">{selectedProject.description}</p>
+                              <h3 className="text-2xl font-marker text-[#d35442] leading-none mb-0.5 select-none">{selectedProject.title}</h3>
+                              <p className="text-xs font-bold text-slate-700 leading-snug">{selectedProject.subtitle}</p>
+                            </div>
 
-                              <div className="bg-white/50 border rounded p-3 mb-3 shadow-inner">
-                                <h4 className="font-hand-kalam text-xs text-[#d35442] font-bold mb-1 select-none">⚡ Business Impact:</h4>
-                                <ul className="font-hand-kalam text-xs space-y-0.5 text-slate-700 list-disc list-inside select-none">
-                                  {selectedProject.metrics.map((m, i) => <li key={i}>{m}</li>)}
+                            <p className="text-xs text-slate-600 select-none">{selectedProject.description}</p>
+
+                            <div className="space-y-1.5 border-t border-slate-200/50 pt-2 text-xs">
+                              <p><b className="text-slate-900 font-bold font-mono text-[9px] uppercase tracking-wider select-none">Research Question:</b> {selectedProject.researchQuestion}</p>
+                              
+                              <div className="bg-white/50 p-2 border rounded font-mono text-[9px] leading-tight text-slate-700 select-all">
+                                <span className="font-bold block text-[8px] text-slate-400 uppercase select-none mb-1">System Design:</span>
+                                {selectedProject.systemDesign}
+                              </div>
+
+                              <div className="select-none">
+                                <span className="font-bold font-mono text-[9px] uppercase tracking-wider block text-slate-900 mb-1">Engineering Challenges Solved:</span>
+                                <ul className="space-y-0.5 pl-1">
+                                  {selectedProject.challenges.map((c, i) => (
+                                    <li key={i} className="flex items-center gap-1.5">
+                                      <span className="text-emerald-600 font-bold select-none">✓</span>
+                                      <span>{c}</span>
+                                    </li>
+                                  ))}
                                 </ul>
                               </div>
                             </div>
+                          </div>
 
-                            <div>
-                              <div className="flex flex-wrap gap-1 mb-3 select-none">
-                                {selectedProject.stack.map(tag => (
-                                  <span key={tag} className="text-[9.5px] text-slate-800 bg-[#e2cfb6] px-2 py-0.5 rounded shadow-sm font-hand-kalam border border-black/5">
-                                    {tag}
-                                  </span>
-                                ))}
+                          <div className="mt-3">
+                            {/* Interactive demo embeds */}
+                            {selectedProject.type === "monitor" && (
+                              <div className="bg-black rounded border border-slate-700/50 p-2 mb-3 h-[180px] relative overflow-hidden">
+                                <div className="screen-glare absolute inset-0 pointer-events-none" />
+                                <InteractiveTerminal />
                               </div>
+                            )}
 
-                              <div className="flex gap-3">
-                                <a href={selectedProject.codeUrl} target="_blank" rel="noreferrer" className="font-hand-kalam text-xs border border-dashed border-slate-800 px-3 py-1 rounded hover:bg-slate-800 hover:text-white transition-all select-none">
-                                  GitHub Code 💻
-                                </a>
-                                <a href={selectedProject.demoUrl} target="_blank" rel="noreferrer" className="font-hand-kalam text-xs border border-dashed border-[#d35442] px-3 py-1 rounded hover:bg-[#d35442] hover:text-white transition-all select-none text-[#d35442]">
-                                  Live Demo 🔗
-                                </a>
+                            {selectedProject.type === "sandbox" && (
+                              <div className="mb-3 border border-slate-300 rounded-lg overflow-hidden bg-slate-950">
+                                <VaultSandbox />
                               </div>
+                            )}
+
+                            <div className="flex flex-wrap gap-1 mb-3 select-none">
+                              <span className="font-mono text-[9px] text-slate-400 uppercase mr-1 select-none flex items-center">Formula:</span>
+                              {selectedProject.techFormula.map(tag => (
+                                <span key={tag} className="text-[9px] text-slate-800 bg-[#e2cfb6] px-2 py-0.5 rounded shadow-sm font-mono border border-black/5 leading-none">
+                                  {tag}
+                                </span>
+                              ))}
+                            </div>
+
+                            <div className="flex gap-4 border-t border-slate-200/50 pt-2.5 select-none justify-between items-center">
+                              <a href={selectedProject.codeUrl} target="_blank" rel="noreferrer" className="font-mono text-[10px] border-b border-dashed border-slate-800 hover:text-black transition-colors select-none font-bold uppercase py-0.5">
+                                [VIEW SOURCE FILE]
+                              </a>
+                              <a href={selectedProject.demoUrl} target="_blank" rel="noreferrer" className="font-mono text-[10px] border-b border-dashed border-[#d35442] hover:text-[#d35442] transition-colors select-none text-[#d35442] font-bold uppercase py-0.5">
+                                [OPEN LIVE EXPERIMENT]
+                              </a>
                             </div>
                           </div>
-                        )}
+                        </div>
                       </div>
 
                     </div>
                   )}
 
                   {/* SPREAD 3: Flippable Polaroids */}
+                  {/* SPREAD 3: System Blueprint Room Canvas */}
                   {currentPage === 3 && (
+                    <div className="space-y-4">
+                      {/* Blueprint Grid Container */}
+                      <div 
+                        className="bg-[#1e40af] text-white p-4 rounded-xl border-4 border-blue-900 shadow-md relative overflow-hidden h-[345px] select-none flex flex-col justify-between"
+                        style={{
+                          backgroundImage: "linear-gradient(rgba(255,255,255,0.07) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.07) 1px, transparent 1px)",
+                          backgroundSize: "20px 20px"
+                        }}
+                      >
+                        {/* Blueprint header stamp */}
+                        <div className="flex justify-between items-start border-b border-white/20 pb-1.5 font-mono text-[9px] uppercase tracking-wider">
+                          <span>Jenish J Draft Pad</span>
+                          <span className="bg-blue-800 border border-blue-600 px-1 rounded font-bold">DRAFT-2027</span>
+                        </div>
+
+                        {/* Rendering selected blueprint SVG */}
+                        <div className="flex-1 flex items-center justify-center p-2">
+                          {selectedBlueprint === "hiremind" && (
+                            <svg viewBox="0 0 240 180" className="w-full h-full stroke-white fill-none stroke-[1.5]">
+                              <defs>
+                                <marker id="arrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                                  <path d="M 0 0 L 10 5 L 0 10 z" fill="white" />
+                                </marker>
+                              </defs>
+                              
+                              <rect x="10" y="30" width="60" height="25" rx="3" strokeDasharray="3 3" />
+                              <text x="40" y="45" textAnchor="middle" fill="white" stroke="none" fontSize="7" className="font-mono">Candidate Stream</text>
+                              
+                              <path d="M 70 42.5 L 90 42.5" markerEnd="url(#arrow)" />
+                              
+                              <rect x="90" y="20" width="70" height="45" rx="3" />
+                              <text x="125" y="35" textAnchor="middle" fill="white" stroke="none" fontSize="8" className="font-mono font-bold">Voice AI Agent</text>
+                              <text x="125" y="45" textAnchor="middle" fill="white" stroke="none" fontSize="6.5" className="font-mono">[Vertex AI Pipeline]</text>
+                              
+                              <path d="M 160 42.5 L 180 42.5" />
+                              <path d="M 180 42.5 L 180 90 L 160 90" />
+                              
+                              <rect x="80" y="80" width="80" height="40" rx="3" />
+                              <text x="120" y="95" textAnchor="middle" fill="white" stroke="none" fontSize="8" className="font-mono font-bold">Evaluation Engine</text>
+                              <text x="120" y="105" textAnchor="middle" fill="white" stroke="none" fontSize="6.5" className="font-mono">[RAG Semantic Match]</text>
+                              
+                              <path d="M 80 100 L 40 100 L 40 130" />
+                              
+                              <rect x="15" y="130" width="50" height="30" rx="3" />
+                              <text x="40" y="145" textAnchor="middle" fill="white" stroke="none" fontSize="7.5" className="font-mono">Dashboard API</text>
+                              
+                              <text x="90" y="145" fill="rgba(255,255,255,0.7)" stroke="none" fontSize="6" className="font-mono italic">Notes: ATS Filtering is 80%</text>
+                              <text x="90" y="153" fill="rgba(255,255,255,0.7)" stroke="none" fontSize="6" className="font-mono italic">more robust than keyword search.</text>
+                              <text x="90" y="161" fill="rgba(255,255,255,0.7)" stroke="none" fontSize="6" className="font-mono italic">Dynamic voice scoring validated.</text>
+                            </svg>
+                          )}
+
+                          {selectedBlueprint === "codesentry" && (
+                            <svg viewBox="0 0 240 180" className="w-full h-full stroke-white fill-none stroke-[1.5]">
+                              <defs>
+                                <marker id="arrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                                  <path d="M 0 0 L 10 5 L 0 10 z" fill="white" />
+                                </marker>
+                              </defs>
+                              
+                              <rect x="10" y="20" width="60" height="30" rx="3" />
+                              <text x="40" y="35" textAnchor="middle" fill="white" stroke="none" fontSize="8" className="font-mono font-bold">git commit hook</text>
+                              <text x="40" y="44" textAnchor="middle" fill="white" stroke="none" fontSize="6" className="font-mono">[pre-commit trigger]</text>
+                              
+                              <path d="M 70 35 L 90 35" markerEnd="url(#arrow)" />
+                              
+                              <rect x="95" y="15" width="70" height="40" rx="3" />
+                              <text x="130" y="33" textAnchor="middle" fill="white" stroke="none" fontSize="8" className="font-mono font-bold">AST Parser</text>
+                              <text x="130" y="42" textAnchor="middle" fill="white" stroke="none" fontSize="6.5" className="font-mono">Regex Secrets Rule</text>
+                              
+                              <path d="M 165 35 L 180 35 L 180 75" markerEnd="url(#arrow)" />
+                              
+                              <rect x="145" y="80" width="75" height="35" rx="3" />
+                              <text x="182.5" y="95" textAnchor="middle" fill="white" stroke="none" fontSize="7.5" className="font-mono font-bold">Vulnerability Score</text>
+                              <text x="182.5" y="105" textAnchor="middle" fill="white" stroke="none" fontSize="6" className="font-mono">[remediation generator]</text>
+                              
+                              <path d="M 145 97.5 L 90 97.5" markerEnd="url(#arrow)" />
+                              
+                              <rect x="15" y="80" width="75" height="35" rx="3" strokeDasharray="3 3" />
+                              <text x="52.5" y="95" textAnchor="middle" fill="white" stroke="none" fontSize="7.5" className="font-mono font-bold">CLI stdout Stream</text>
+                              <text x="52.5" y="105" textAnchor="middle" fill="white" stroke="none" fontSize="6" className="font-mono">[commit blocking]</text>
+                              
+                              <text x="15" y="145" fill="rgba(255,255,255,0.7)" stroke="none" fontSize="6.5" className="font-mono italic">Scan benchmark: ~0.40 seconds.</text>
+                              <text x="15" y="155" fill="rgba(255,255,255,0.7)" stroke="none" fontSize="6.5" className="font-mono italic">AST rules neutralize network dep overhead.</text>
+                            </svg>
+                          )}
+
+                          {selectedBlueprint === "oncoenv" && (
+                            <svg viewBox="0 0 240 180" className="w-full h-full stroke-white fill-none stroke-[1.5]">
+                              <defs>
+                                <marker id="arrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                                  <path d="M 0 0 L 10 5 L 0 10 z" fill="white" />
+                                </marker>
+                              </defs>
+                              
+                              <rect x="15" y="30" width="70" height="40" rx="3" />
+                              <text x="50" y="48" textAnchor="middle" fill="white" stroke="none" fontSize="8" className="font-mono font-bold">RL Agent</text>
+                              <text x="50" y="58" textAnchor="middle" fill="white" stroke="none" fontSize="6" className="font-mono">[gene editor policy]</text>
+                              
+                              <path d="M 85 40 L 145 40" markerEnd="url(#arrow)" />
+                              <text x="115" y="35" textAnchor="middle" fill="white" stroke="none" fontSize="7" className="font-mono">Action: Edit</text>
+                              
+                              <rect x="155" y="30" width="70" height="85" rx="3" />
+                              <text x="190" y="48" textAnchor="middle" fill="white" stroke="none" fontSize="7.5" className="font-mono font-bold">Bio Sim Env</text>
+                              <text x="190" y="58" textAnchor="middle" fill="white" stroke="none" fontSize="6" className="font-mono">[scRNA Matrix]</text>
+                              <text x="190" y="70" textAnchor="middle" fill="white" stroke="none" fontSize="6" className="font-mono">[40+ Bio Tools]</text>
+                              
+                              <path d="M 155 95 L 95 95" markerEnd="url(#arrow)" />
+                              <text x="125" y="90" textAnchor="middle" fill="white" stroke="none" fontSize="7" className="font-mono">State + Reward</text>
+                              
+                              <rect x="15" y="85" width="70" height="30" rx="3" strokeDasharray="3 3" />
+                              <text x="50" y="100" textAnchor="middle" fill="white" stroke="none" fontSize="7" className="font-mono font-bold">Reward Scoring</text>
+                              <text x="50" y="108" textAnchor="middle" fill="white" stroke="none" fontSize="6.5" className="font-mono">[Stepwise Reward]</text>
+                              
+                              <text x="15" y="145" fill="rgba(255,255,255,0.7)" stroke="none" fontSize="6.5" className="font-mono italic">Hypothesis: RL matrix state rewards converge</text>
+                              <text x="15" y="155" fill="rgba(255,255,255,0.7)" stroke="none" fontSize="6.5" className="font-mono italic">faster under stepwise genomic count weights.</text>
+                            </svg>
+                          )}
+                        </div>
+
+                        {/* Blueprint footer details */}
+                        <div className="flex justify-between items-end border-t border-white/20 pt-1 font-mono text-[8px] opacity-60">
+                          <span>Scale: 1 : 1</span>
+                          <span>Rev: 2.027</span>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* SPREAD 4: Experience Polaroids */}
+                  {currentPage === 4 && (
                     <div className="space-y-4 flex flex-col items-center">
                       <h3 className="font-hand-kalam text-base text-slate-800 font-bold select-none mb-2">
                         📷 Hover photo snapshots to flip details:
                       </h3>
 
-                      <div className="flex flex-wrap gap-4 justify-center w-full max-h-[380px] overflow-y-auto pr-1">
-                        {experiences.map(exp => {
+                      <div className="flex flex-wrap gap-5 justify-center w-full max-h-[380px] overflow-y-auto pr-1 pt-3">
+                        {experiences.map((exp, idx) => {
                           const isFlipped = flippedPolaroid === exp.id;
+                          const tilts = ["rotate-[-2.5deg]", "rotate-[3deg]", "rotate-[-1.5deg]"];
+                          const tilt = tilts[idx % tilts.length];
+                          
                           return (
                             <div 
                               key={exp.id}
                               onMouseEnter={() => setFlippedPolaroid(exp.id)}
                               onMouseLeave={() => setFlippedPolaroid(null)}
-                              className="relative w-40 h-48 cursor-pointer perspective-md"
+                              className={`relative w-40 h-48 cursor-pointer perspective-md transition-transform duration-350 hover:scale-105 hover:rotate-0 ${tilt}`}
                             >
+                              {/* Red metal thumbtack decoration */}
+                              <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 w-5 h-5 z-30 select-none pointer-events-none drop-shadow">
+                                <svg viewBox="0 0 24 24" className="w-full h-full">
+                                  <circle cx="12" cy="8" r="6" fill="#d35442" />
+                                  <circle cx="10" cy="6" r="2.5" fill="#ff7865" />
+                                  <line x1="12" y1="8" x2="14" y2="18" stroke="#94a3b8" strokeWidth="2.5" strokeLinecap="round" />
+                                </svg>
+                              </div>
+
                               <motion.div
                                 animate={{ rotateY: isFlipped ? 180 : 0 }}
                                 transition={{ duration: 0.5 }}
@@ -1005,9 +1440,37 @@ const experiences = [
                     </div>
                   )}
 
-                  {/* SPREAD 4: Connect Postcard & Paper Plane */}
-                  {currentPage === 4 && (
+                  {/* SPREAD 5: Connect Postcard & Paper Plane */}
+                  {currentPage === 5 && (
                     <div className="flex-1 flex flex-col justify-center items-center relative overflow-visible">
+                      
+                      {/* Draggable Red Failure Log card */}
+                      <motion.div
+                        drag
+                        dragConstraints={constraintsRef}
+                        dragElastic={0.15}
+                        whileDrag={{ scale: 1.05, zIndex: 100 }}
+                        whileHover={{ rotate: 1, scale: 1.02 }}
+                        className="absolute bottom-[-50px] right-[-30px] w-64 bg-[#fce8e6] border-2 border-red-300 p-3.5 shadow-lg rounded rotate-[2.5deg] cursor-grab active:cursor-grabbing text-slate-800 text-[10px] leading-tight select-none hidden lg:block z-30 font-hand-kalam"
+                      >
+                        <div className="absolute -top-2 left-1/2 -translate-x-1/2 w-10 h-4 bg-white/50 shadow-sm border border-red-400/10 rotate-[-1deg]" />
+                        <p className="font-bold border-b border-red-400/50 pb-0.5 mb-2 uppercase text-[9px] text-red-600 font-mono">⚠️ ANOMALY RECORD - FAILED LOGS</p>
+                        
+                        <div className="space-y-3 text-[9.5px]">
+                          <div>
+                            <p className="font-bold text-red-800 uppercase font-mono leading-none">Log 01: Voice AI Loop Crash</p>
+                            <p className="text-slate-700 mt-0.5">TTS buffer overflow during concurrency load tests.</p>
+                            <p className="text-emerald-750 font-bold font-mono text-[9px] mt-0.5">✓ Fix: Partitioned events with Redis queue.</p>
+                          </div>
+                          <div>
+                            <p className="font-bold text-red-800 uppercase font-mono leading-none">Log 02: OncoEnv State Explosion</p>
+                            <p className="text-slate-700 mt-0.5">Agent stuck in infinite loop due to sparse biological gradients.</p>
+                            <p className="text-emerald-750 font-bold font-mono text-[9px] mt-0.5">✓ Fix: Redesigned stepwise Euclidean reward decay.</p>
+                          </div>
+                        </div>
+                        <p className="text-[7px] text-slate-400 mt-3.5 italic text-center select-none font-mono">(Drag folder anywhere to reveal postcard)</p>
+                      </motion.div>
+
                       <AnimatePresence mode="wait">
                         
                         {/* POSTCARD EDITING */}
@@ -1138,6 +1601,24 @@ const experiences = [
                         )}
 
                       </AnimatePresence>
+
+                      {/* Mobile view of the Failure Log */}
+                      <div className="w-full max-w-[460px] bg-[#fce8e6] border-2 border-red-300 p-4 shadow rounded mt-4 text-slate-800 text-xs leading-snug lg:hidden font-hand-kalam select-none">
+                        <p className="font-bold border-b border-red-400/50 pb-0.5 mb-2 uppercase text-xs text-red-600 font-mono">⚠️ ANOMALY RECORD - FAILED LOGS</p>
+                        <div className="space-y-3">
+                          <div>
+                            <p className="font-bold text-red-800 uppercase font-mono text-[10px] leading-none">Log 01: Voice AI Loop Crash</p>
+                            <p className="text-slate-700 text-xs mt-0.5">TTS buffer overflow during concurrency load tests.</p>
+                            <p className="text-emerald-700 font-bold font-mono text-[10px] mt-0.5">✓ Fix: Partitioned events with Redis queue.</p>
+                          </div>
+                          <div>
+                            <p className="font-bold text-red-800 uppercase font-mono text-[10px] leading-none">Log 02: OncoEnv State Explosion</p>
+                            <p className="text-slate-700 text-xs mt-0.5">Agent stuck in infinite loop due to sparse biological gradients.</p>
+                            <p className="text-emerald-700 font-bold font-mono text-[10px] mt-0.5">✓ Fix: Redesigned stepwise Euclidean reward decay.</p>
+                          </div>
+                        </div>
+                      </div>
+
                     </div>
                   )}
 
@@ -1145,7 +1626,7 @@ const experiences = [
 
                 {/* Page turn indicator footer */}
                 <div className="border-t border-[#d35442]/10 pt-4 flex justify-between items-center text-slate-500 font-mono text-[9px] uppercase select-none tracking-widest mt-6">
-                  <span>Page {currentPage + 1} / 5</span>
+                  <span>Page {currentPage + 1} / 6</span>
                   <button 
                     onClick={() => setIsBookOpen(false)}
                     className="hover:underline text-[#d35442]/80 uppercase cursor-pointer"
@@ -1185,6 +1666,98 @@ const experiences = [
 
         </AnimatePresence>
       </div>
+
+      {/* 🔑 FOR RECRUITERS ONLY tab - fixed floating sticky note/tab */}
+      <div className="fixed bottom-6 left-6 z-50">
+        <motion.button
+          onClick={() => setRecruiterOpen(true)}
+          whileHover={{ scale: 1.05, rotate: 1 }}
+          whileTap={{ scale: 0.95 }}
+          className="bg-yellow-100 border-2 border-yellow-400 p-2.5 px-4 shadow-layered font-marker text-xs text-slate-800 rounded uppercase tracking-wider cursor-pointer flex items-center gap-2 select-none border-b-4 border-r-4 rotate-[-1deg]"
+        >
+          <span>🔑</span> FOR RECRUITERS ONLY
+        </motion.button>
+      </div>
+
+      {/* Recruiter Briefing Overlay Modal */}
+      <AnimatePresence>
+        {recruiterOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 select-text"
+            onClick={() => setRecruiterOpen(false)}
+          >
+            {/* Briefing Sheet Container */}
+            <motion.div
+              initial={{ scale: 0.9, y: 20, rotate: -1.5 }}
+              animate={{ scale: 1, y: 0, rotate: 0 }}
+              exit={{ scale: 0.9, y: 20, rotate: 1.5 }}
+              transition={{ type: "spring", damping: 25, stiffness: 280 }}
+              className="bg-[#fcfbe3] border-[8px] border-[#d35442] rounded-xl shadow-2xl p-6 sm:p-8 max-w-lg w-full relative paper-texture text-slate-800 font-hand-kalam rotate-[-0.5deg]"
+              onClick={e => e.stopPropagation()}
+            >
+              {/* Pinned tape look at top */}
+              <div className="absolute -top-4 left-1/2 -translate-x-1/2 w-28 h-6 bg-white/40 shadow border border-slate-400/5 rotate-[-0.5deg]" />
+              
+              <button 
+                onClick={() => setRecruiterOpen(false)}
+                className="absolute top-3 right-4 font-mono text-base font-bold text-[#d35442] hover:text-[#b83b2a] cursor-pointer select-none"
+              >
+                [X]
+              </button>
+
+              <div className="border-b-2 border-dashed border-[#d35442]/30 pb-3 mb-4 select-none">
+                <h3 className="text-3xl font-marker text-[#d35442] tracking-wide">RECRUITER BRIEFING BRIEF</h3>
+                <p className="font-mono text-[9px] text-slate-500 uppercase tracking-widest font-bold">Fast-Load Engineering Dossier</p>
+              </div>
+
+              <div className="space-y-4">
+                <div>
+                  <h4 className="font-bold text-[#d35442] text-sm uppercase font-mono">⚡ Elevator Summary:</h4>
+                  <p className="text-sm mt-1 leading-relaxed text-slate-800">
+                    I build production-grade automation engines and intelligent RAG systems designed to remove repetitive human friction. I specialize in designing robust backend pipelines, developer CLI scanners, and autonomous AI agents.
+                  </p>
+                </div>
+
+                <div>
+                  <h4 className="font-bold text-[#d35442] text-sm uppercase font-mono">🎯 Key Competencies:</h4>
+                  <ul className="text-sm space-y-1 mt-1 pl-1">
+                    <li className="flex items-start gap-2">
+                      <span className="text-[#d35442] font-bold">▪</span>
+                      <span><b>AI Systems Integration:</b> Context RAG, prompt safety, & multi-agent routing.</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="text-[#d35442] font-bold">▪</span>
+                      <span><b>Backend Pipeline Design:</b> Async queues, webhook routing, & low-latency APIs.</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="text-[#d35442] font-bold">▪</span>
+                      <span><b>Developer Productivity Tools:</b> CLI rules AST scanning, scanner optimizations.</span>
+                    </li>
+                  </ul>
+                </div>
+
+                <div className="border-t border-[#d35442]/20 pt-4 flex flex-col sm:flex-row justify-between items-center gap-3 select-none">
+                  <div>
+                    <p className="text-[10px] text-slate-500 font-mono">Candidate Name: Jenish J</p>
+                    <p className="text-[10px] text-slate-500 font-mono">Target Role: AI / Full Stack Engineer</p>
+                  </div>
+                  
+                  <a 
+                    href="/Jenish_Resume.pdf" 
+                    download
+                    className="w-full sm:w-auto bg-[#d35442] text-white hover:bg-[#b83b2a] font-mono text-xs font-bold py-2.5 px-4 rounded shadow border border-red-700/30 flex items-center justify-center gap-2 active:scale-95 transition-all text-center cursor-pointer"
+                  >
+                    <span>📥</span> DOWNLOAD RESUME.PDF
+                  </a>
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
     </div>
   );
