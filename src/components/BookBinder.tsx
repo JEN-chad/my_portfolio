@@ -42,11 +42,11 @@ export default function BookBinder({
 
   // Navigation tabs
   const tabs = [
-    { label: "blueprint 📝", index: 0, color: "bg-[#e7d7c1] text-slate-800" },
-    { label: "floppy disk 🛠", index: 1, color: "bg-[#88c5f7] text-slate-800" },
-    { label: "cassettes 📁", index: 2, color: "bg-[#fbc67b] text-slate-800" },
-    { label: "polaroids 💼", index: 3, color: "bg-[#a259ff]/20 text-[#a259ff] border-[#a259ff]/30" },
-    { label: "postcard ✉️", index: 4, color: "bg-note-yellow text-slate-800" },
+    { label: "About 📝", index: 0, color: "bg-[#e7d7c1] text-slate-800" },
+    { label: "Skillset 🛠", index: 1, color: "bg-[#88c5f7] text-slate-800" },
+    { label: "Projects 📁", index: 2, color: "bg-[#fbc67b] text-slate-800" },
+    { label: "Experience 💼", index: 3, color: "bg-[#a259ff]/20 text-[#a259ff] border-[#a259ff]/30" },
+    { label: "Connect ✉️", index: 4, color: "bg-note-yellow text-slate-800" },
   ];
 
   // Mindset Brain node state
