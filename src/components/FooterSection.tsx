@@ -85,7 +85,7 @@ const FooterSection = () => {
 
 
             <motion.a 
-              href={allChecked ? "mailto:hello@jackie.design" : undefined}
+              href={allChecked ? "mailto:jenishj.dev@gmail.com" : undefined}
               animate={allChecked ? { scale: [1, 1.05, 1], rotate: [0, -2, 0] } : {}}
               transition={{ duration: 0.4 }}
               whileHover={allChecked ? { scale: 1.05, rotate: -2 } : {}}

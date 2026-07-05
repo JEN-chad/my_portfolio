@@ -76,30 +76,45 @@ const LinkedInIcon = ({ className }: { className?: string }) => (
   </svg>
 );
 
-const XIcon = ({ className }: { className?: string }) => (
-  <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M 5 5 L 19 19 M 19 5 L 5 19" />
-  </svg>
-);
-
 const GithubIcon = ({ className }: { className?: string }) => (
   <svg className={className} viewBox="0 0 24 24" fill="currentColor">
     <path fillRule="evenodd" clipRule="evenodd" d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.865 8.17 6.839 9.49.5.09.682-.22.682-.48v-1.69c-2.782.6-3.369-1.34-3.369-1.34-.454-1.16-1.11-1.47-1.11-1.47-.908-.62.069-.61.069-.61 1.003.07 1.531 1.03 1.531 1.03.892 1.53 2.341 1.09 2.91.83.092-.65.35-1.09.636-1.34-2.22-.25-4.555-1.11-4.555-4.94 0-1.09.39-1.98 1.029-2.68-.103-.25-.446-1.27.098-2.65 0 0 .84-.27 2.75 1.02A9.56 9.56 0 0112 6.84c.85.004 1.705.11 2.504.34 1.909-1.29 2.747-1.02 2.747-1.02.546 1.38.203 2.4.1 2.65.64.7 1.028 1.59 1.028 2.68 0 3.84-2.339 4.69-4.566 4.94.359.31.678.92.678 1.85v2.74c0 .27.18.58.688.48C19.138 20.16 22 16.42 22 12c0-5.52-4.477-10-10-10z" />
   </svg>
 );
 
+interface HeaderProps {
+  onNavigate?: (target: "about" | "work" | "connect") => void;
+}
 
-const Header = () => {
+const Header = ({ onNavigate }: HeaderProps) => {
   const [hoveredLink, setHoveredLink] = useState<string | null>(null);
   const [isBlinking, setIsBlinking] = useState(false);
 
-  const handleConnectClick = () => {
+  const handleAboutClick = (e: React.MouseEvent) => {
+    if (onNavigate) {
+      e.preventDefault();
+      onNavigate("about");
+    }
+  };
+
+  const handleWorkClick = (e: React.MouseEvent) => {
+    if (onNavigate) {
+      e.preventDefault();
+      onNavigate("work");
+    }
+  };
+
+  const handleConnectClick = (e: React.MouseEvent) => {
     setIsBlinking(true);
     setTimeout(() => setIsBlinking(false), 800);
+    if (onNavigate) {
+      e.preventDefault();
+      onNavigate("connect");
+    }
   };
 
   return (
-    <header className="w-full max-w-5xl mx-auto px-6 py-12 pt-24 pb-8 flex items-center justify-center relative min-h-[160px]">
+    <header className="w-full max-w-5xl mx-auto px-6 py-8 flex items-center justify-center relative z-40">
       <nav className="w-full flex justify-center">
         <ul className="flex flex-wrap justify-center gap-6 sm:gap-10 md:gap-16 text-cream-light text-xl sm:text-2xl md:text-[32px] font-handwritten tracking-wide items-center">
           
@@ -119,7 +134,11 @@ const Header = () => {
             onMouseEnter={() => setHoveredLink("about")}
             onMouseLeave={() => setHoveredLink(null)}
           >
-            <a className="relative z-10 hover:text-white transition-colors block px-2 py-1" href="#about">
+            <a 
+              className="relative z-10 hover:text-white transition-colors block px-2 py-1 cursor-pointer" 
+              href="#about"
+              onClick={handleAboutClick}
+            >
               about
             </a>
             <AnimatePresence>
@@ -136,9 +155,9 @@ const Header = () => {
                   <motion.span 
                     initial={{ y: -5, opacity: 0 }}
                     animate={{ y: 0, opacity: 1 }}
-                    className="absolute -bottom-8 left-1/2 -translate-x-1/2 text-destructive text-xl whitespace-nowrap"
+                    className="absolute -bottom-8 left-1/2 -translate-x-1/2 text-[#d35442] text-xl whitespace-nowrap"
                   >
-                    in-progress
+                    view bio
                   </motion.span>
                   
                   {/* Top Doodles */}
@@ -179,7 +198,11 @@ const Header = () => {
             onMouseEnter={() => setHoveredLink("work")}
             onMouseLeave={() => setHoveredLink(null)}
           >
-            <a className="relative z-10 hover:text-white transition-colors block px-2 py-1" href="#work">
+            <a 
+              className="relative z-10 hover:text-white transition-colors block px-2 py-1 cursor-pointer" 
+              href="#work"
+              onClick={handleWorkClick}
+            >
               work
             </a>
             <AnimatePresence>
@@ -223,7 +246,7 @@ const Header = () => {
             onMouseLeave={() => setHoveredLink(null)}
           >
             <a 
-              className="relative z-10 hover:text-white transition-colors block px-2 py-1" 
+              className="relative z-10 hover:text-white transition-colors block px-2 py-1 cursor-pointer" 
               href="#connect"
               onClick={handleConnectClick}
             >
