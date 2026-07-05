@@ -71,30 +71,42 @@ export default function BookBinder({
   const allConnectChecked = checkedConnect.length === checklistItems.length;
 
   // Zoho/OpenEnv ledger experiences
-  const experiences = [
+const experiences = [
+  {
+    id: "Academor",
+    role: "AI Engineering Intern",
+    company: "Academor",
+    duration: "June 24 - July 24",
+    bullets: [
+      "Fine-tuned ML models in PyTorch",
+      "Built data preprocessing pipelines",
+      "Optimized deep learning workflows"
+    ]
+  },
     {
-      id: "zoho",
-      role: "AI Engineering Intern",
-      company: "Zoho Corporation",
-      duration: "June 2023 - Dec 2023",
-      bullets: [
-        "Fine-tuned local open-source LLMs using PyTorch.",
-        "Built high-velocity webhook parsers.",
-        "Refactored legacy UI components with Vitest tests."
-      ]
-    },
-    {
-      id: "openenv",
-      role: "Bioinformatics Software Intern",
-      company: "OpenEnv Labs",
-      duration: "Jan 2024 - June 2024",
-      bullets: [
-        "Designed OpenAI-compatible agent API bindings.",
-        "Created Python-based static scan hooks.",
-        "Configured CD Docker workflows."
-      ]
-    }
-  ];
+    id: "GFG",
+    role: "Full Stack Developer Course",
+    company: "GeeksforGeeks",
+    duration: "April 25 - July 25",
+    bullets: [
+      "14-week React & Node JS course",
+      "Built production-ready MERN apps",
+      "Mastered MongoDB & Express APIs"
+    ]
+  },
+  {
+    id: "Zuntra",
+    role: "AI Agent & Automation Intern",
+    company: "Zuntra",
+    duration: "Sep 25 - Mar 26",
+    bullets: [
+      "Integrated LLM APIs & systems",
+      "Built React & Node.js features",
+      "Designed autonomous AI workflows"
+    ]
+  }
+
+];
 
   // 7 Projects list
   const projects: Project[] = [
@@ -370,7 +382,7 @@ export default function BookBinder({
               </div>
 
               {/* Tape Sticker */}
-              <div className="tape w-28 h-6 rotate-[6deg] mx-auto mt-6 z-10 text-[10px] font-mono text-slate-700/80 flex items-center justify-center">
+              <div className="tape w-32 h-6 rotate-[6deg] mx-auto mt-6 z-10 text-[10px] font-mono text-slate-900 font-bold flex items-center justify-center bg-white/90 shadow-sm">
                 SYSTEM LAB FILE
               </div>
 
@@ -848,7 +860,7 @@ export default function BookBinder({
                         📷 Hover photo snapshots to flip details:
                       </h3>
 
-                      <div className="flex flex-col sm:flex-row gap-6 justify-center w-full">
+                      <div className="flex flex-wrap gap-4 justify-center w-full max-h-[380px] overflow-y-auto pr-1">
                         {experiences.map(exp => {
                           const isFlipped = flippedPolaroid === exp.id;
                           return (
@@ -856,7 +868,7 @@ export default function BookBinder({
                               key={exp.id}
                               onMouseEnter={() => setFlippedPolaroid(exp.id)}
                               onMouseLeave={() => setFlippedPolaroid(null)}
-                              className="relative w-48 h-56 cursor-pointer perspective-md"
+                              className="relative w-40 h-48 cursor-pointer perspective-md"
                             >
                               <motion.div
                                 animate={{ rotateY: isFlipped ? 180 : 0 }}
@@ -868,11 +880,21 @@ export default function BookBinder({
                                 {/* Front: Polaroid Photo */}
                                 <div 
                                   style={{ backfaceVisibility: "hidden" }}
-                                  className="w-full h-full bg-white p-3 shadow-md border rounded-sm flex flex-col justify-between absolute inset-0"
+                                  className="w-full h-full bg-white p-2.5 shadow-md border rounded-sm flex flex-col justify-between absolute inset-0"
                                 >
-                                  <div className="w-full h-36 bg-slate-900 border rounded-sm flex items-center justify-center text-white relative overflow-hidden">
+                                  <div className="w-full h-28 bg-white border rounded-sm flex items-center justify-center relative overflow-hidden p-2">
                                     <div className="screen-glare absolute inset-0 opacity-10 pointer-events-none" />
-                                    <span className="text-3xl font-mono select-none">{exp.id === "zoho" ? "🏢" : "🔬"}</span>
+                                    <img 
+                                      src={
+                                        exp.id === "Academor" 
+                                          ? "/academor.png" 
+                                          : exp.id === "Zuntra" 
+                                          ? "/zuntra.png" 
+                                          : "/Gfg.png"
+                                      } 
+                                      alt={exp.company} 
+                                      className="max-w-full max-h-full object-contain select-none"
+                                    />
                                   </div>
                                   <div className="text-center font-hand-kalam text-slate-800 mt-2 select-none">
                                     <p className="font-bold text-xs">{exp.company}</p>
@@ -883,15 +905,15 @@ export default function BookBinder({
                                 {/* Back: Polaroid Notes */}
                                 <div 
                                   style={{ backfaceVisibility: "hidden", transform: "rotateY(180deg)" }}
-                                  className="w-full h-full bg-yellow-100 p-4 shadow-md border rounded-sm border-yellow-200 absolute inset-0 flex flex-col justify-between font-hand-kalam text-slate-800 text-[11px] leading-snug"
+                                  className="w-full h-full bg-yellow-100 p-2.5 shadow-md border rounded-sm border-yellow-200 absolute inset-0 flex flex-col justify-between font-hand-kalam text-slate-800 text-[10px] leading-snug"
                                 >
                                   <div>
                                     <p className="font-bold text-xs text-[#d35442] border-b pb-1 mb-1.5">{exp.role}</p>
-                                    <ul className="list-disc list-inside space-y-1">
+                                    <ul className="list-disc list-inside space-y-0.5">
                                       {exp.bullets.map((b, i) => <li key={i}>{b}</li>)}
                                     </ul>
                                   </div>
-                                  <p className="text-[9px] font-mono text-slate-500 text-right uppercase mt-2 select-none">Notes on back</p>
+                                  <p className="text-[8px] font-mono text-slate-500 text-right uppercase mt-1 select-none">Notes on back</p>
                                 </div>
 
                               </motion.div>
