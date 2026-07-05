@@ -1,7 +1,10 @@
 import { motion } from "framer-motion";
+import { useState } from "react";
 import heroImage from "@/assets/hero-illustration.png";
 
 const HeroSection = () => {
+  const [isSpread, setIsSpread] = useState(false);
+
   return (
     <section id="about" className="w-full px-4 mt-8 relative min-h-screen flex justify-center pb-20">
       
@@ -132,13 +135,13 @@ const HeroSection = () => {
           <div className="w-full sm:w-3/5 space-y-4 z-10 relative lg:pl-12 xl:pl-20">
             <div>
               <h2 className="text-[36px] sm:text-[40px] text-notebook-border m-0 leading-none">Jenish J</h2>
-              <p className="uppercase tracking-widest text-sm font-bold text-accent-foreground/70 mt-2">Product Designer</p>
+              <p className="uppercase tracking-widest text-sm font-bold text-accent-foreground/70 mt-2">AI Developer • Student</p>
             </div>
-            <h1 className="font-bold text-[44px] sm:text-[56px] leading-[1] text-notebook-border max-w-[300px]">
-              Software<br />should feel<br />honest
+            <h1 className="font-bold text-[44px] sm:text-[56px] leading-[1.1] text-notebook-border max-w-[450px]">
+              I build AI tools<br />that make<br />work easier
             </h1>
             <p className="uppercase tracking-widest text-sm font-semibold text-notebook-border">
-              Cape Town • GMT +2:00
+              Chennai · GMT +5:30
             </p>
           </div>
 
@@ -153,34 +156,51 @@ const HeroSection = () => {
         </section>
 
         {/* Bottom Section - Beliefs */}
-        <section className="bg-notebook-bg p-8 sm:p-10 md:p-14 relative min-h-[300px] sm:min-h-[350px] shadow-[0_-5px_10px_rgba(0,0,0,0.05)]">
-          <h3 className="text-notebook-border uppercase tracking-widest text-[16px] font-bold text-center mb-[20px] relative z-10">
+        <section className="bg-notebook-bg p-8 sm:p-10 md:p-14 relative min-h-[300px] sm:min-h-[420px] shadow-[0_-5px_10px_rgba(0,0,0,0.05)]">
+          <h3 className="text-notebook-border uppercase tracking-widest text-[16px] font-bold text-center mb-[20px] relative z-10 flex flex-col items-center">
             3 things I strongly believe in
           </h3>
 
-          <div className="relative w-full min-h-[250px] flex flex-col sm:block items-center gap-6 sm:gap-0">
+          <motion.div 
+            className="relative w-full min-h-[300px] flex flex-col sm:block items-center gap-6 sm:gap-0 group"
+            onViewportEnter={() => setIsSpread(true)}
+            onViewportLeave={() => setIsSpread(false)}
+            viewport={{ amount: 0.4, once: false }}
+          >
             {/* Note 1: Lined paper */}
-            <div className="sm:absolute sm:left-[10%] sm:top-[20px] w-48 h-48 lined-paper-bg sm:-rotate-[8deg] shadow-lg border border-gray-200 p-4 flex items-center justify-center transform hover:scale-105 hover:z-50 transition-all duration-300 z-[1] paper-texture rough-edge-1 realistic-shadow cursor-default">
+            <div className={`sm:absolute w-48 h-48 lined-paper-bg shadow-lg border border-gray-200 p-4 flex items-center justify-center transform hover:scale-105 hover:!z-50 z-[1] paper-texture rough-edge-1 realistic-shadow ease-[cubic-bezier(0.25,1,0.5,1.2)] transition-all duration-700 ${
+              isSpread 
+                ? "sm:left-[10%] sm:top-[20px] sm:-rotate-[8deg]" 
+                : "sm:left-[calc(50%-6rem)] sm:top-[50px] sm:-rotate-[14deg]"
+            }`}>
               <p className="text-[28px] sm:text-[32px] text-card-foreground text-center leading-tight pt-2 relative z-[2]">
-                tirelessly pursue clarity.
+                Clarity over<br />complexity.
               </p>
             </div>
 
             {/* Note 2: Grid paper */}
-            <div className="sm:absolute sm:right-[10%] sm:top-[30px] w-52 h-40 fine-grid-bg sm:rotate-[5deg] shadow-lg border border-gray-300 p-5 flex items-center justify-center transform hover:scale-105 hover:z-50 transition-all duration-300 z-[2] paper-texture rough-edge-2 realistic-shadow cursor-default">
+            <div className={`sm:absolute w-52 h-40 fine-grid-bg shadow-lg border border-gray-300 p-5 flex items-center justify-center transform hover:scale-105 hover:!z-50 z-[2] paper-texture rough-edge-2 realistic-shadow ease-[cubic-bezier(0.25,1,0.5,1.2)] transition-all duration-700 delay-75 ${
+              isSpread 
+                ? "sm:right-[10%] sm:top-[30px] sm:rotate-[5deg]" 
+                : "sm:right-[calc(50%-6.5rem)] sm:top-[60px] sm:-rotate-[3deg]"
+            }`}>
               <p className="text-[22px] sm:text-[24px] text-card-foreground text-center leading-snug relative z-[2]">
-                Software should empower.
+                Software should<br />make work<br />easier.
               </p>
             </div>
 
             {/* Note 3: Colored paper */}
-            <div className="sm:absolute sm:left-[35%] sm:top-[120px] w-56 h-36 bg-note-tan sm:-rotate-[2deg] shadow-lg border border-note-tan p-4 flex flex-col items-center justify-center transform hover:scale-105 hover:z-50 transition-all duration-300 z-[3] paper-texture rough-edge-3 realistic-shadow cursor-default">
+            <div className={`sm:absolute w-56 h-36 bg-note-tan shadow-lg border border-note-tan p-4 flex flex-col items-center justify-center transform hover:scale-105 hover:!z-50 z-[3] paper-texture rough-edge-3 realistic-shadow ease-[cubic-bezier(0.25,1,0.5,1.2)] transition-all duration-700 delay-150 ${
+              isSpread 
+                ? "sm:left-[35%] sm:top-[120px] sm:-rotate-[2deg]" 
+                : "sm:left-[calc(50%-7rem)] sm:top-[70px] sm:rotate-[7deg]"
+            }`}>
               <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 text-2xl" style={{ zIndex: 10, filter: 'drop-shadow(1px 1px 1px rgba(0,0,0,0.2))' }}>📎</div>
-              <p className="italic text-[24px] sm:text-[28px] text-card-foreground text-center mt-2 relative z-[2]">
-                Design for moments
+              <p className="italic text-[24px] sm:text-[28px] text-card-foreground text-center mt-2 relative z-[2] leading-[1.1]">
+                Learn.<br />Build.<br />Repeat.
               </p>
             </div>
-          </div>
+          </motion.div>
         </section>
       </motion.article>
     </section>

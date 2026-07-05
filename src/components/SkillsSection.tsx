@@ -54,11 +54,11 @@ const SkillsSection = () => {
           <motion.div variants={tapeHover} className="tape absolute -top-[10px] left-1/2 -translate-x-1/2 w-[80px] h-[30px]" />
           <h3 className="text-3xl font-bold mb-4 border-b border-black/10 pb-2">languages</h3>
           <ul className="font-notes text-2xl space-y-3">
-            <li>javascript</li>
-            <li>typescript</li>
-            <li>python</li>
-            <li>html</li>
-            <li>css</li>
+            <li>Javascript</li>
+            <li>Typescript</li>
+            <li>Python</li>
+            <li>Html</li>
+            <li>Css</li>
           </ul>
         </motion.div>
 
@@ -73,10 +73,10 @@ const SkillsSection = () => {
           <div className="absolute inset-0 opacity-10 pointer-events-none" style={{ backgroundImage: 'radial-gradient(#000 1px, transparent 0)', backgroundSize: '10px 10px' }} />
           <h3 className="text-3xl font-bold mb-4 relative border-b border-black/10 pb-2">frontend</h3>
           <ul className="font-notes text-2xl space-y-3 relative">
-            <li>react</li>
-            <li>nextjs</li>
-            <li>vue</li>
-            <li>tailwind</li>
+            <li>React</li>
+            <li>Nextjs</li>
+            <li>Vue</li>
+            <li>Tailwind</li>
           </ul>
         </motion.div>
 
@@ -170,10 +170,10 @@ const SkillsSection = () => {
 
               <h3 className="text-3xl font-bold mb-6 mt-4 border-b border-black/10 pb-3">backend</h3>
               <ul className="font-notes text-2xl space-y-4">
-                <li>nodejs</li>
-                <li>express</li>
-                <li>postgresql</li>
-                <li>mongodb</li>
+                <li>Node.Js</li>
+                <li>Express</li>
+                <li>PostgreSql</li>
+                <li>Mongodb</li>
               </ul>
             </div>
           </motion.div>

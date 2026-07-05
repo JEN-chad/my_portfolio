@@ -77,12 +77,8 @@ const XIcon = ({ className }: { className?: string }) => (
 );
 
 const GithubIcon = ({ className }: { className?: string }) => (
-  <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-    <circle cx="12" cy="12" r="10" />
-    <path d="M9 16 C 9 16, 9 19, 7 19" />
-    <path d="M15 16 C 15 16, 15 19, 17 19" />
-    <path d="M8 12 C 8 10, 10 8, 12 8 C 14 8, 16 10, 16 12 C 16 14, 14 16, 12 16 C 10 16, 8 14, 8 12 Z" />
-    <path d="M12 16 L 12 22" />
+  <svg className={className} viewBox="0 0 24 24" fill="currentColor">
+    <path fillRule="evenodd" clipRule="evenodd" d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.865 8.17 6.839 9.49.5.09.682-.22.682-.48v-1.69c-2.782.6-3.369-1.34-3.369-1.34-.454-1.16-1.11-1.47-1.11-1.47-.908-.62.069-.61.069-.61 1.003.07 1.531 1.03 1.531 1.03.892 1.53 2.341 1.09 2.91.83.092-.65.35-1.09.636-1.34-2.22-.25-4.555-1.11-4.555-4.94 0-1.09.39-1.98 1.029-2.68-.103-.25-.446-1.27.098-2.65 0 0 .84-.27 2.75 1.02A9.56 9.56 0 0112 6.84c.85.004 1.705.11 2.504.34 1.909-1.29 2.747-1.02 2.747-1.02.546 1.38.203 2.4.1 2.65.64.7 1.028 1.59 1.028 2.68 0 3.84-2.339 4.69-4.566 4.94.359.31.678.92.678 1.85v2.74c0 .27.18.58.688.48C19.138 20.16 22 16.42 22 12c0-5.52-4.477-10-10-10z" />
   </svg>
 );
 
@@ -238,44 +234,28 @@ const Header = () => {
                 >
                   <OvalHighlight className="absolute -left-1 -top-1 w-[110%] h-[120%] text-cream-light opacity-80" />
                   
-                  {/* Spiky Face */}
-                  <motion.div 
-                    initial={{ y: 10, opacity: 0 }}
-                    animate={{ y: -45, x: -50, opacity: 1 }}
-                    exit={{ y: 10, opacity: 0, transition: { duration: 0.2 } }}
-                    className="absolute left-1/2 -top-2 -translate-x-1/2"
-                  >
-                    <SpikyFace className="w-10 h-10 text-cream-light" />
-                  </motion.div>
-
                   {/* Social Icons floating up */}
                   <motion.div 
                     initial={{ y: 0, x: 0, opacity: 0, rotate: -20 }}
-                    animate={{ y: -30, x: 20, opacity: 1, rotate: 10 }}
+                    animate={{ y: -45, x: -30, opacity: 1, rotate: -10 }}
                     exit={{ y: 0, opacity: 0 }}
-                    className="absolute left-1/2 top-0"
+                    className="absolute left-1/2 top-0 pointer-events-auto"
                   >
-                    <GithubIcon className="w-8 h-8 text-cream-light" />
+                    <a href="https://github.com/JEN-chad" target="_blank" rel="noreferrer" className="block p-1 hover:text-white transition-colors">
+                      <GithubIcon className="w-8 h-8 text-cream-light hover:scale-110 transition-transform" />
+                    </a>
                   </motion.div>
 
                   <motion.div 
                     initial={{ y: 10, x: 0, opacity: 0, rotate: 20 }}
-                    animate={{ y: -70, x: 10, opacity: 1, rotate: -15 }}
+                    animate={{ y: -45, x: 10, opacity: 1, rotate: 10 }}
                     exit={{ y: 10, opacity: 0 }}
                     transition={{ delay: 0.05 }}
-                    className="absolute left-1/2 top-0"
+                    className="absolute left-1/2 top-0 pointer-events-auto"
                   >
-                    <XIcon className="w-8 h-8 text-cream-light" />
-                  </motion.div>
-
-                  <motion.div 
-                    initial={{ y: 20, x: 0, opacity: 0, rotate: -10 }}
-                    animate={{ y: -110, x: 25, opacity: 1, rotate: 5 }}
-                    exit={{ y: 20, opacity: 0 }}
-                    transition={{ delay: 0.1 }}
-                    className="absolute left-1/2 top-0"
-                  >
-                    <LinkedInIcon className="w-8 h-8 text-cream-light" />
+                    <a href="https://www.linkedin.com/in/jenishj-dev/" target="_blank" rel="noreferrer" className="block p-1 hover:text-white transition-colors">
+                      <LinkedInIcon className="w-8 h-8 text-cream-light hover:scale-110 transition-transform" />
+                    </a>
                   </motion.div>
 
                 </motion.div>

@@ -1,6 +1,23 @@
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
+import { useState } from "react";
 
 const FooterSection = () => {
+  const [checkedItems, setCheckedItems] = useState<number[]>([]);
+  
+  const toggleCheck = (index: number) => {
+    setCheckedItems(prev => 
+      prev.includes(index) ? prev.filter(i => i !== index) : [...prev, index]
+    );
+  };
+
+  const checklist = [
+    "Building useful AI products",
+    "Solving meaningful problems",
+    "Collaborating with curious builders"
+  ];
+  
+  const allChecked = checkedItems.length === checklist.length;
+
   return (
     <footer id="connect" className="relative py-24 md:py-32 overflow-hidden flex flex-col items-center justify-center">
       
@@ -20,7 +37,7 @@ const FooterSection = () => {
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ duration: 0.6 }}
-        className="bg-[#e7d7c1] rounded-sm p-8 sm:p-10 w-[90%] max-w-2xl lg:max-w-3xl relative shadow-layered z-10 transition-colors duration-300 float-slow-2 paper-texture"
+        className="bg-[#e7d7c1] rounded-sm p-6 md:p-8 w-[90%] max-w-xl lg:max-w-2xl relative shadow-layered z-10 transition-colors duration-300 float-slow-2 paper-texture"
         whileHover={{ y: -8, boxShadow: "0 25px 50px -12px rgba(0,0,0,0.35)", rotate: 0 }}
       >
         {/* Devil doodle absolute positioned on top right of the card, partially hanging out */}
@@ -43,33 +60,70 @@ const FooterSection = () => {
             </h2>
             <div className="h-0.5 bg-[#d35442]/30 w-full mb-6 rounded-full"></div>
             
-            <ul className="space-y-4 mb-8">
-              {[
-                "Impactful work",
-                "Meaningful work",
-                "Diversed team of talented folks"
-              ].map((text, i) => (
-                <li key={i} className="group flex items-center gap-3 p-2 -ml-2 rounded-md transition-all duration-150 hover:bg-[#ff5a46]/5 cursor-default">
-                  <div className="w-5 h-5 rounded-sm border-2 border-[#d35442] flex-shrink-0 relative overflow-hidden flex items-center justify-center bg-white/50">
-                    <svg viewBox="0 0 24 24" className="w-6 h-6 absolute text-[#d35442] -top-1 -right-1 stroke-current fill-none stroke-[3] stroke-linecap-round stroke-linejoin-round draw-tick">
-                      <polyline points="20 6 9 17 4 12"></polyline>
-                    </svg>
-                  </div>
-                  <span className="font-hand-kalam text-xl md:text-2xl text-[#d35442] italic leading-tight transition-colors duration-150 group-hover:text-[#b83b2a]">
-                    {text}
-                  </span>
-                </li>
-              ))}
+            <ul className="space-y-4 mb-4">
+              {checklist.map((text, i) => {
+                const isChecked = checkedItems.includes(i);
+                return (
+                  <li 
+                    key={i} 
+                    onClick={() => toggleCheck(i)}
+                    className={`group flex items-center gap-3 p-2 -ml-2 rounded-md transition-all duration-150 cursor-pointer ${isChecked ? "bg-[#ff5a46]/5" : "hover:bg-[#ff5a46]/5"}`}
+                  >
+                    <div className="w-5 h-5 rounded-sm border-2 border-[#d35442] flex-shrink-0 relative overflow-hidden flex items-center justify-center bg-white/50 transition-colors">
+                      <svg viewBox="0 0 24 24" className={`w-6 h-6 absolute text-[#d35442] -top-1 -right-1 stroke-current fill-none stroke-[3] stroke-linecap-round stroke-linejoin-round transition-all duration-300 ${isChecked ? "draw-tick opacity-100" : "opacity-0 scale-50"}`}>
+                        <polyline points="20 6 9 17 4 12"></polyline>
+                      </svg>
+                    </div>
+                    <span className={`font-hand-kalam text-xl md:text-2xl italic leading-tight transition-colors duration-150 ${isChecked ? "text-[#b83b2a] font-bold" : "text-[#d35442] group-hover:text-[#b83b2a]"}`}>
+                      {text}
+                    </span>
+                  </li>
+                );
+              })}
             </ul>
 
+
+
             <motion.a 
-              href="mailto:hello@jackie.design"
-              whileHover={{ scale: 1.05, rotate: -2 }}
-              whileTap={{ scale: 0.95 }}
-              className="px-6 py-2 border-2 border-[#d35442]/80 text-[#d35442] font-hand-kalam text-xl md:text-2xl w-fit cursor-pointer flex items-center justify-center rounded-sm transition-colors hover:bg-[#d35442]/5"
+              href={allChecked ? "mailto:hello@jackie.design" : undefined}
+              animate={allChecked ? { scale: [1, 1.05, 1], rotate: [0, -2, 0] } : {}}
+              transition={{ duration: 0.4 }}
+              whileHover={allChecked ? { scale: 1.05, rotate: -2 } : {}}
+              whileTap={allChecked ? { scale: 0.95 } : {}}
+              className={`px-6 py-2 border-2 font-hand-kalam text-xl md:text-2xl w-fit flex items-center justify-center rounded-sm transition-all duration-300 ${
+                allChecked 
+                  ? "border-[#d35442]/80 text-[#d35442] cursor-pointer hover:bg-[#d35442]/5 shadow-sm" 
+                  : "border-[#d35442]/30 text-[#d35442]/40 cursor-not-allowed grayscale-[50%]"
+              }`}
             >
               let's chat!
             </motion.a>
+
+            {/* Progress Indicator */}
+            <div className="h-8 mt-4 flex items-center">
+              <AnimatePresence mode="wait">
+                <motion.p
+                  key={checkedItems.length}
+                  initial={{ opacity: 0, y: 5 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -5 }}
+                  transition={{ duration: 0.2 }}
+                  className={`font-hand-kalam text-lg ${allChecked ? "text-[#d35442] font-bold flex items-center gap-2" : "text-[#d35442]/70"}`}
+                >
+                  {allChecked ? (
+                    <>
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                        <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                      </svg>
+                      looks like we're aligned.
+                    </>
+                  ) : (
+                    `${checkedItems.length} / 3 matched`
+                  )}
+                </motion.p>
+              </AnimatePresence>
+            </div>
           </div>
 
           {/* Right Column: Hand-drawn Illustration */}
@@ -184,9 +238,9 @@ const FooterSection = () => {
 
         {/* Signature */}
         <div className="relative mt-16 md:mt-20 mb-6 flex flex-col items-center text-center">
-          <p className="text-white/70 font-hand-kalam text-xl md:text-2xl mb-1 italic px-4">late night builds &amp; curious ideas ☕</p>
+          <p className="text-white/70 font-hand-kalam text-xl md:text-2xl mb-6 md:mb-8 italic px-4 py-4">late night builds &amp; curious ideas ☕</p>
           <div className="relative">
-            <h2 className="text-5xl md:text-6xl lg:text-7xl font-hand-kalam text-[#d35442] font-bold tracking-wide relative z-10">
+            <h2 className="text-5xl  md:text-6xl lg:text-7xl font-hand-kalam text-[#d35442] font-bold tracking-wide relative z-10">
               Jenish<span className="text-[#a53b2b]">.</span>
             </h2>
             
@@ -204,7 +258,7 @@ const FooterSection = () => {
 
         {/* Copyright */}
         <p className="text-xs text-muted-foreground font-mono mt-4 border-t border-white/10 pt-6 w-full max-w-lg text-center">
-          © 2025 Jenish. Always shipping.
+          © 2026 Jenish. Always shipping.
         </p>
       </div>
     </footer>
