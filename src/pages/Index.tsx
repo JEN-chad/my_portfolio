@@ -8,7 +8,9 @@ const Index = () => {
   const [isBookOpen, setIsBookOpen] = useState<boolean>(false);
 
   // Map header navigations directly to book spreads
+  // Guard: only navigate if logbook has been unlocked via the key
   const handleNavigate = (target: "about" | "work" | "connect") => {
+    if (sessionStorage.getItem("logbook_unlocked") !== "true") return; // key not used yet
     setIsBookOpen(true);
     if (target === "about") {
       setCurrentPage(0);

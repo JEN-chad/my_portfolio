@@ -1,8 +1,9 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { motion, AnimatePresence, useAnimation } from "framer-motion";
 import InteractiveTerminal from "./InteractiveTerminal";
 import VaultSandbox from "./VaultSandbox";
 import LofiWalkman from "./LofiWalkman";
+import FloatingKey from "./FloatingKey";
 
 interface Project {
   id: string;
@@ -31,7 +32,14 @@ export default function BookBinder({
   setIsBookOpen,
 }: BookBinderProps) {
   const constraintsRef = useRef<HTMLDivElement>(null);
-  
+  const lockRef = useRef<HTMLDivElement>(null);
+  const coverShakeControls = useAnimation();
+
+  // Session-persisted unlock state
+  const [bookLocked, setBookLocked] = useState<boolean>(
+    () => sessionStorage.getItem("logbook_unlocked") !== "true"
+  );
+
   // Navigation tabs
   const tabs = [
     { label: "blueprint 📝", index: 0, color: "bg-[#e7d7c1] text-slate-800" },
@@ -43,6 +51,33 @@ export default function BookBinder({
 
   // Mindset Brain node state
   const [activeBrainNode, setActiveBrainNode] = useState<string>("manifesto");
+  const [isUnlocking, setIsUnlocking] = useState(false);
+
+  // Handle key unlock completion
+  const handleUnlockComplete = useCallback(() => {
+    sessionStorage.setItem("logbook_unlocked", "true");
+    setBookLocked(false);
+    setIsUnlocking(true);
+    setTimeout(() => {
+      setIsBookOpen(true);
+      setCurrentPage(0);
+      setIsUnlocking(false);
+    }, 650);
+  }, [setIsBookOpen, setCurrentPage]);
+
+  // Shake the cover when clicked while locked
+  const handleLockedCoverClick = useCallback(() => {
+    coverShakeControls.start({
+      x: [0, -10, 10, -8, 8, -4, 4, 0],
+      rotate: [0, -2, 2, -1.5, 1.5, 0],
+      transition: { duration: 0.55, ease: "easeInOut" },
+    });
+  }, [coverShakeControls]);
+
+  // Seed coverShakeControls so the cover is visible on mount
+  useEffect(() => {
+    coverShakeControls.start({ opacity: 1, scale: 1, x: 0, rotate: 0 });
+  }, [coverShakeControls]);
 
   // Floppy reader states
   const [loadedDisk, setLoadedDisk] = useState<string | null>(null);
@@ -249,6 +284,16 @@ const experiences = [
     }, 1000);
   };
 
+  const handleOpenBook = () => {
+    if (isUnlocking) return;
+    setIsUnlocking(true);
+    setTimeout(() => {
+      setIsBookOpen(true);
+      setIsUnlocking(false);
+      setCurrentPage(0);
+    }, 650);
+  };
+
   const handleSelectProject = (id: string) => {
     setSelectedProjectId(id);
     setIsPlayingTape(false);
@@ -347,10 +392,34 @@ const experiences = [
           
           {/* CLOSED BOOK COVER */}
           {!isBookOpen ? (
+            <div className="relative inline-flex justify-center w-full max-w-[500px] mx-auto">
+              {/* ======= STANDALONE DIARY LOCK STRAP ======= */}
+              <motion.div
+                className="absolute right-[-2px] top-1/2 -translate-y-1/2 z-50 flex flex-col items-center gap-1 pointer-events-none"
+                animate={isUnlocking ? { x: 60, rotate: 18, opacity: 0 } : { x: 0, rotate: 0, opacity: 1 }}
+                transition={{ duration: 0.5, ease: [0.25, 1, 0.5, 1] }}
+              >
+                {/* Top strap band */}
+                <div className="w-4 h-16 rounded-sm shadow-md" style={{ background: "linear-gradient(to right, #6b4c35, #8B6340, #6b4c35)", border: "1px solid #4a2f1c" }} />
+                {/* Gold clasp buckle — lockRef targeted by FloatingKey */}
+                <motion.div
+                  ref={lockRef}
+                  animate={isUnlocking ? { scale: 1.3, rotate: -20 } : { rotate: [0, 0] }}
+                  transition={{ duration: 0.35 }}
+                  className="w-10 h-10 rounded-full flex items-center justify-center shadow-xl"
+                  style={{ background: "linear-gradient(135deg, #f6d365 0%, #d4a01a 50%, #f6d365 100%)", border: "2px solid #8B6340", boxShadow: "0 2px 8px rgba(0,0,0,0.5), inset 0 1px 2px rgba(255,255,255,0.3)" }}
+                >
+                  <span className="text-lg select-none leading-none">{isUnlocking ? "🔓" : "🔒"}</span>
+                </motion.div>
+                {/* Bottom strap band */}
+                <div className="w-4 h-16 rounded-sm shadow-md" style={{ background: "linear-gradient(to right, #6b4c35, #8B6340, #6b4c35)", border: "1px solid #4a2f1c" }} />
+              </motion.div>
             <motion.div
               key="closed-cover"
               initial={{ rotateY: 0, opacity: 0, scale: 0.95 }}
-              animate={{ rotateY: 0, opacity: 1, scale: 1 }}
+              animate={isUnlocking 
+                ? { rotateY: -10, rotateX: 2, scale: 0.98 }
+                : coverShakeControls}
               exit={{ 
                 rotateY: -110, 
                 opacity: 0, 
@@ -358,15 +427,15 @@ const experiences = [
                 x: "-30%",
                 transition: { duration: 0.7, ease: [0.25, 1, 0.5, 1] } 
               }}
-              whileHover={{ 
+              whileHover={isUnlocking || bookLocked ? {} : { 
                 scale: 1.04, 
                 rotate: 0.5, 
                 y: -10, 
                 boxShadow: "0 35px 70px rgba(0,0,0,0.6)" 
               }}
-              onClick={() => { setIsBookOpen(true); setCurrentPage(0); }}
-              style={{ transformOrigin: "left center" }}
-              className="w-full max-w-[500px] h-[600px] bg-[#221c18] border-[12px] border-[#13100e] rounded-l-md rounded-r-3xl shadow-2xl flex flex-col justify-between p-8 text-center cursor-pointer transition-shadow duration-300 relative overflow-hidden group"
+              onClick={bookLocked ? handleLockedCoverClick : handleOpenBook}
+              style={{ transformOrigin: "left center", cursor: bookLocked ? "not-allowed" : "pointer" }}
+              className="w-full max-w-[500px] h-[600px] bg-[#221c18] border-[12px] border-[#13100e] rounded-l-md rounded-r-3xl shadow-2xl flex flex-col justify-between p-8 text-center transition-shadow duration-300 relative group"
             >
               <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_30%,rgba(0,0,0,0.4))] pointer-events-none" />
               <div className="absolute left-0 top-0 bottom-0 w-8 bg-[#13100e] border-r-2 border-[#ff5a46]/20 shadow-inner" />
@@ -388,19 +457,30 @@ const experiences = [
 
               <div className="mb-10 text-cream-light space-y-4">
                 <motion.p 
-                  animate={{ scale: [1, 1.06, 1] }}
-                  transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
-                  className="font-hand-kalam text-2xl text-[#4ade80]"
+                  animate={{ scale: [1, 1.04, 1], opacity: [0.8, 1, 0.8] }}
+                  transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+                  className="font-hand-kalam text-xl"
+                  style={{ color: "#f6c860", textShadow: "0 0 12px rgba(246,200,96,0.3)" }}
                 >
-                  tap to boot console ⚙️
+                  {bookLocked ? "use the key to unlock ✦" : "tap to open ⚙️"}
                 </motion.p>
-                <div className="flex justify-center items-center gap-1 text-red-400 font-hand-kalam text-sm select-none">
-                  <span>( initialize</span>
+                <div className="flex justify-center items-center gap-1 font-hand-kalam text-sm select-none" style={{ color: "rgba(230,207,162,0.55)" }}>
+                  <span>( {bookLocked ? "find the key" : "initialize"}</span>
                   <motion.span animate={{ x: [0, 4, 0] }} transition={{ duration: 1, repeat: Infinity }}>➔</motion.span>
                   <span>)</span>
                 </div>
               </div>
             </motion.div>
+            {/* Floating Key — only shown while book is locked */}
+            {bookLocked && (
+              <FloatingKey
+                lockRef={lockRef as React.RefObject<HTMLDivElement>}
+                onUnlockComplete={handleUnlockComplete}
+                bookShakeControls={{ shake: handleLockedCoverClick }}
+                bookLocked={bookLocked}
+              />
+            )}
+            </div>
           ) : (
             
             // OPEN BOOK SPREAD
