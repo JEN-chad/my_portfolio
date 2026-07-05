@@ -5,9 +5,13 @@ interface LogLine {
   text: string;
 }
 
-export default function InteractiveTerminal() {
+interface InteractiveTerminalProps {
+  onUnlockSecrets?: () => void;
+}
+
+export default function InteractiveTerminal({ onUnlockSecrets }: InteractiveTerminalProps) {
   const [history, setHistory] = useState<LogLine[]>([
-    { type: "output", text: "Welcome to Jenish's CRT-Term v1.42" },
+    { type: "output", text: "Welcome to Project Genesis Console v1.42" },
     { type: "output", text: "Type 'help' or click a command tag below to begin." },
   ]);
   const [inputValue, setInputValue] = useState("");
@@ -70,6 +74,53 @@ db.execute("SELECT * FROM users WHERE id = '" + req.query.id + "'");
 -------------------------------------------------------------`,
         },
       ]);
+    } else if (trimmedCmd === "analyze subject") {
+      setHistory([
+        ...newHistory,
+        {
+          type: "output",
+          text: `{
+  "subject_id": "001",
+  "name": "Jenish J",
+  "role": "AI + Full Stack Engineer",
+  "adaptability": "MAXIMUM",
+  "experiments_completed": 7,
+  "status": "READY FOR DEPLOYMENT",
+  "neural_modules": ["Frontend Engine", "Backend Core", "AI Intelligence"]
+}`,
+        },
+      ]);
+    } else if (trimmedCmd === "unlock secrets") {
+      if (onUnlockSecrets) {
+        setHistory([
+          ...newHistory,
+          {
+            type: "output",
+            text: `[SYS] Triggering decryption override...
+[SYS] AUTHORIZATION: GRANTED
+[SYS] Anomaly records drawer unlocked on binder edge!`,
+          },
+        ]);
+        setTimeout(() => {
+          onUnlockSecrets();
+        }, 1200);
+      } else {
+        setHistory([
+          ...newHistory,
+          {
+            type: "output",
+            text: `[SYS] Anomaly database link not established. Ensure you are within the Research Binder.`,
+          },
+        ]);
+      }
+    } else if (trimmedCmd === "contact subject") {
+      setHistory([
+        ...newHistory,
+        {
+          type: "output",
+          text: `[SYS] Directive dispatch portal available on Page 5. Addressed to Command Base Station.`,
+        },
+      ]);
     } else {
       switch (trimmedCmd) {
         case "help":
@@ -79,12 +130,15 @@ db.execute("SELECT * FROM users WHERE id = '" + req.query.id + "'");
               type: "output",
               text: `Available commands:
   help            - Display this help information
-  about           - Learn more about Jenish
-  skills          - Print developer skill tree
-  projects        - Show the 7 actual projects
+  about           - Learn more about Subject #001
+  skills          - Print upgraded neural modules
+  projects        - Show the experiment records
+  analyze subject - Compile real-time subject parameters
+  unlock secrets  - Access anomaly & failed experiment logs
+  contact subject - Direct connection protocol details
   codesentry check - Run CLI security scan demo
   codesentry fix   - Generate AI prompt remedy
-  coffee          - Dispense retro caffeine
+  coffee          - Dispense caffeine
   clear           - Clean the screen`,
             },
           ]);
@@ -94,10 +148,10 @@ db.execute("SELECT * FROM users WHERE id = '" + req.query.id + "'");
             ...newHistory,
             {
               type: "output",
-              text: `Jenish J - AI Developer & Creative Builder
+              text: `Jenish J - AI + Full Stack Engineering Experiment
 Based in Chennai, India.
 I build intelligent automation pipelines, design bioinformatics RL environments, 
-and engineer secure web applications with a scrapbook soul.`,
+and engineer secure web applications with a classified scientist soul.`,
             },
           ]);
           break;
@@ -106,11 +160,11 @@ and engineer secure web applications with a scrapbook soul.`,
             ...newHistory,
             {
               type: "output",
-              text: `Jenish's Skill Stack
-├── Languages: TS, JS, Python, HTML, CSS
-├── Frontend: React, Next.js, Vue, Tailwind CSS
-├── AI & ML: Google Gemini, Vertex AI, OpenEnv, OpenAI API
-└── Backend: Node.js, Express, Drizzle ORM, Docker, PostgreSQL`,
+              text: `UPGRADED NEURAL CORE MODULES:
+├── FRONTEND: React, Next.js, HTML, CSS, Tailwind
+├── BACKEND: Node.js, Express, Databases (Mdb, Postgres), Drizzle
+├── AI CORE: LLM pipelines, RAG, AI Agents, Vertex AI
+└── IMPACT CODES: Task Automation, Engineer handoffs, Prioritization`,
             },
           ]);
           break;
@@ -119,7 +173,7 @@ and engineer secure web applications with a scrapbook soul.`,
             ...newHistory,
             {
               type: "output",
-              text: `Actual Projects List:
+              text: `EXPERIMENT LOG DIRECTORY:
 1. HireMindAI - AI-Native Recruitment OS
 2. codesentry - Real-time security CLI scanner
 3. OncoEnv - Procedural Bioinformatics RL Environment
@@ -143,7 +197,7 @@ and engineer secure web applications with a scrapbook soul.`,
      |________|==)
     (__________)
 Caffeine level: 100%
-"Ready to scan some AI code!"`,
+"Caffeine injected. Systems optimized."`,
             },
           ]);
           break;
@@ -171,23 +225,23 @@ Caffeine level: 100%
   };
 
   return (
-    <div className="font-mono text-sm flex flex-col h-full select-text text-terminal-green">
+    <div className="font-mono text-xs flex flex-col h-full select-text text-terminal-green">
       {/* Scrollable Shell Logs */}
       <div 
         onClick={focusInput}
         className="flex-1 overflow-y-auto pr-1 space-y-2 max-h-[220px] scrollbar-thin scrollbar-thumb-terminal-green/20"
       >
         {history.map((line, idx) => (
-          <div key={idx} className="whitespace-pre-wrap leading-relaxed">
+          <div key={idx} className="whitespace-pre-wrap leading-relaxed font-jetbrains">
             {line.type === "input" ? (
               <span>
-                <span className="text-[#a259ff]">visitor@jenish-term:~$</span>{" "}
-                <span className="text-cream-light">{line.text}</span>
+                <span className="text-[#ff5a46]">researcher@genesis-console:~$</span>{" "}
+                <span className="text-stone-300">{line.text}</span>
               </span>
             ) : line.type === "error" ? (
-              <span className="text-red-400">{line.text}</span>
+              <span className="text-red-500">{line.text}</span>
             ) : (
-              <span className="text-cream-light/90">{line.text}</span>
+              <span className="text-stone-300/90">{line.text}</span>
             )}
           </div>
         ))}
@@ -196,7 +250,7 @@ Caffeine level: 100%
 
       {/* Input Prompt */}
       <div className="flex items-center gap-2 mt-2 pt-2 border-t border-terminal-green/20">
-        <span className="text-[#a259ff] shrink-0">visitor@jenish-term:~$</span>
+        <span className="text-[#ff5a46] shrink-0">researcher@genesis-console:~$</span>
         <div className="flex-1 flex items-center relative">
           <input
             ref={inputRef}
@@ -204,7 +258,7 @@ Caffeine level: 100%
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
             onKeyDown={handleKeyDown}
-            className="w-full bg-transparent outline-none border-none p-0 text-cream-light font-mono focus:ring-0 focus:outline-none"
+            className="w-full bg-transparent outline-none border-none p-0 text-stone-100 font-mono focus:ring-0 focus:outline-none"
             autoFocus
           />
           {inputValue === "" && (
@@ -213,13 +267,13 @@ Caffeine level: 100%
         </div>
       </div>
 
-      {/* Quick Command Pills for mobile & easy click */}
+      {/* Quick Command Pills */}
       <div className="flex flex-wrap gap-2 mt-4 pt-3 border-t border-terminal-green/10">
-        {["help", "skills", "projects", "codesentry check", "codesentry fix", "clear"].map((tag) => (
+        {["help", "analyze subject", "unlock secrets", "skills", "projects", "clear"].map((tag) => (
           <button
             key={tag}
             onClick={() => handleCommand(tag)}
-            className="text-xs border border-terminal-green/30 px-2 py-0.5 rounded hover:bg-terminal-green/20 hover:text-white transition-colors cursor-pointer select-none font-mono"
+            className="text-[10px] border border-terminal-green/30 px-2 py-0.5 rounded hover:bg-terminal-green/20 hover:text-white transition-colors cursor-pointer select-none font-mono"
           >
             [{tag}]
           </button>
