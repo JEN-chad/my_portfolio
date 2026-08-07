@@ -19,3 +19,10 @@ No issues found.
 **Issues:** 0 HIGH  0 MED  0 LOW
 
 No issues found.
+
+## 2026-07-16 06:57 UTC — 2 file(s) scanned
+**Issues:** 1 HIGH  0 MED  0 LOW
+
+| Severity | File | Line | Issue |
+|----------|------|------|-------|
+| HIGH | src/components/BookBinder.tsx | 127 | SQL string injection |

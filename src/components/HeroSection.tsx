@@ -135,14 +135,25 @@ const HeroSection = () => {
           <div className="w-full sm:w-3/5 space-y-4 z-10 relative lg:pl-12 xl:pl-20">
             <div>
               <h2 className="text-[36px] sm:text-[40px] text-notebook-border m-0 leading-none">Jenish J</h2>
-              <p className="uppercase tracking-widest text-sm font-bold text-accent-foreground/70 mt-2">AI Developer • Student</p>
+              <p className="uppercase tracking-widest text-sm font-bold text-accent-foreground/70 mt-2">Full-Stack SDE & AI Systems Engineer</p>
             </div>
             <h1 className="font-bold text-[44px] sm:text-[56px] leading-[1.1] text-notebook-border max-w-[450px]">
               I build AI tools<br />that make<br />work easier
             </h1>
-            <p className="uppercase tracking-widest text-sm font-semibold text-notebook-border">
-              Chennai · GMT +5:30
-            </p>
+            <div className="flex flex-wrap items-center gap-4 pt-1">
+              <p className="uppercase tracking-widest text-sm font-semibold text-notebook-border">
+                Chennai · GMT +5:30
+              </p>
+              <a
+                href="/Jenish_J_Resume.pdf"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 font-hand-kalam text-base bg-[#e7d7c1] text-notebook-border border-2 border-dashed border-notebook-border/60 px-3.5 py-1 rounded-full hover:bg-notebook-border hover:text-cream-light hover:border-solid transition-all shadow-sm group select-none cursor-pointer"
+              >
+                <span>📄 Resume PDF</span>
+                <span className="group-hover:translate-x-0.5 transition-transform">→</span>
+              </a>
+            </div>
           </div>
 
           {/* Right: Illustration */}

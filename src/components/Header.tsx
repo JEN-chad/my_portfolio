@@ -286,7 +286,35 @@ const Header = ({ onNavigate }: HeaderProps) => {
                       <LinkedInIcon className="w-8 h-8 text-cream-light hover:scale-110 transition-transform" />
                     </a>
                   </motion.div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </li>
 
+          {/* RESUME LINK */}
+          <li 
+            className="relative"
+            onMouseEnter={() => setHoveredLink("resume")}
+            onMouseLeave={() => setHoveredLink(null)}
+          >
+            <a 
+              className="relative z-10 hover:text-white transition-colors block px-2 py-1 cursor-pointer" 
+              href="/Jenish_J_Resume.pdf"
+              target="_blank"
+              rel="noreferrer"
+            >
+              resume 📄
+            </a>
+            <AnimatePresence>
+              {hoveredLink === "resume" && (
+                <motion.div 
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.2 }}
+                  className="absolute inset-0 z-0 pointer-events-none"
+                >
+                  <OvalHighlight className="absolute -left-1 -top-1 w-[110%] h-[120%] text-cream-light opacity-80" />
                 </motion.div>
               )}
             </AnimatePresence>

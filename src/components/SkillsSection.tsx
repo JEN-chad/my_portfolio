@@ -126,10 +126,10 @@ const SkillsSection = () => {
             <h3 className="text-3xl font-bold mb-4 border-b border-black/10 pb-2 select-none">languages</h3>
             <ul className="font-notes text-2xl space-y-3 select-none">
               <li>Javascript</li>
-              <li>Typescript</li>
               <li>Python</li>
-              <li>Html</li>
-              <li>Css</li>
+              <li>Java</li>
+              <li>SQL</li>
+              <li>Typescript</li>
             </ul>
           </motion.div>
         </div>
@@ -154,8 +154,8 @@ const SkillsSection = () => {
             <ul className="font-notes text-2xl space-y-3 relative select-none">
               <li>React</li>
               <li>Nextjs</li>
-              <li>Vue</li>
               <li>Tailwind</li>
+              <li>Expo</li>
             </ul>
           </motion.div>
         </div>
@@ -177,10 +177,10 @@ const SkillsSection = () => {
             <motion.div variants={tapeHover} className="tape absolute -top-[10px] left-1/2 -translate-x-1/2 w-[80px] h-[30px] opacity-70" />
             <h3 className="text-3xl font-bold mb-4 border-b border-black/10 pb-2 select-none">tools</h3>
             <ul className="font-notes text-2xl space-y-3 select-none">
-              <li>git</li>
+              <li>git & github</li>
               <li>docker</li>
-              <li>figma</li>
-              <li>vscode</li>
+              <li>gcp & oci</li>
+              <li>postman</li>
             </ul>
           </motion.div>
         </div>

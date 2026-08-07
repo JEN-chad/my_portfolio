@@ -4,19 +4,8 @@ import InteractiveTerminal from "./InteractiveTerminal";
 import VaultSandbox from "./VaultSandbox";
 import LofiWalkman from "./LofiWalkman";
 import FloatingKey from "./FloatingKey";
+import { projects, Project } from "@/data/projects";
 
-interface Project {
-  id: string;
-  title: string;
-  subtitle: string;
-  description: string;
-  category: "ai" | "web" | "tooling";
-  type: "monitor" | "sandbox" | "dossier";
-  metrics: string[];
-  stack: string[];
-  codeUrl: string;
-  demoUrl: string;
-}
 
 interface BookBinderProps {
   currentPage: number;
@@ -42,15 +31,15 @@ export default function BookBinder({
 
   // Navigation tabs
   const tabs = [
-    { label: "blueprint 📝", index: 0, color: "bg-[#e7d7c1] text-slate-800" },
-    { label: "floppy disk 🛠", index: 1, color: "bg-[#88c5f7] text-slate-800" },
-    { label: "cassettes 📁", index: 2, color: "bg-[#fbc67b] text-slate-800" },
-    { label: "polaroids 💼", index: 3, color: "bg-[#a259ff]/20 text-[#a259ff] border-[#a259ff]/30" },
-    { label: "postcard ✉️", index: 4, color: "bg-note-yellow text-slate-800" },
+    { label: "blueprint", index: 0, color: "bg-[#e7d7c1] text-slate-800" },
+    { label: "toolbox", index: 1, color: "bg-[#88c5f7] text-slate-800" },
+    { label: "project deck", index: 2, color: "bg-[#fbc67b] text-slate-800" },
+    { label: "experience", index: 3, color: "bg-[#a259ff]/20 text-[#a259ff] border-[#a259ff]/30" },
+    { label: "connect", index: 4, color: "bg-note-yellow text-slate-800" },
   ];
 
   // Mindset Brain node state
-  const [activeBrainNode, setActiveBrainNode] = useState<string>("manifesto");
+  const [activeBrainNode, setActiveBrainNode] = useState<string>("purpose");
   const [isUnlocking, setIsUnlocking] = useState(false);
 
   // Handle key unlock completion
@@ -86,6 +75,14 @@ export default function BookBinder({
   // Cassette deck states
   const [selectedProjectId, setSelectedProjectId] = useState<string>("hiremind");
   const [isPlayingTape, setIsPlayingTape] = useState(true);
+  const [projectFilter, setProjectFilter] = useState<"all" | "ai" | "sde">("all");
+
+  const filteredProjects = projects.filter(p => {
+    if (projectFilter === "ai") return p.category === "ai";
+    if (projectFilter === "sde") return p.category === "sde" || p.category === "tooling";
+    return true;
+  });
+
 
   // Polaroid hover flips
   const [flippedPolaroid, setFlippedPolaroid] = useState<string | null>(null);
@@ -105,174 +102,55 @@ export default function BookBinder({
 
   const allConnectChecked = checkedConnect.length === checklistItems.length;
 
-  // Zoho/OpenEnv ledger experiences
-const experiences = [
-  {
-    id: "Academor",
-    role: "AI Engineering Intern",
-    company: "Academor",
-    duration: "June 24 - July 24",
-    bullets: [
-      "Fine-tuned ML models in PyTorch",
-      "Built data preprocessing pipelines",
-      "Optimized deep learning workflows"
-    ]
-  },
+  // Resume-backed experiences ledger
+  const experiences = [
     {
-    id: "GFG",
-    role: "Full Stack Developer Course",
-    company: "GeeksforGeeks",
-    duration: "April 25 - July 25",
-    bullets: [
-      "14-week React & Node JS course",
-      "Built production-ready MERN apps",
-      "Mastered MongoDB & Express APIs"
-    ]
-  },
-  {
-    id: "Zuntra",
-    role: "AI Agent & Automation Intern",
-    company: "Zuntra",
-    duration: "Sep 25 - Mar 26",
-    bullets: [
-      "Integrated LLM APIs & systems",
-      "Built React & Node.js features",
-      "Designed autonomous AI workflows"
-    ]
-  }
-
-];
-
-  // 7 Projects list
-  const projects: Project[] = [
-    {
-      id: "hiremind",
-      title: "HireMindAI",
-      subtitle: "AI Recruitment Operating System",
-      description: "Automated candidate evaluations, resume parsers, and custom interview graders built using Vertex AI pipeline platforms.",
-      category: "ai",
-      type: "dossier",
-      metrics: [
-        "Automates up to 95% of the screening lifecycle",
-        "Reduces manual recruiter hours by over 80%",
-        "Standardizes candidate technical/behavioral scoring",
-        "Authenticates resumes through background validation layers"
-      ],
-      stack: ["Next.js", "Drizzle ORM", "Neon Postgres", "Google Gemini", "Vertex AI", "Resend"],
-      codeUrl: "https://github.com/JEN-chad/HireMindAI",
-      demoUrl: "https://github.com/JEN-chad/HireMindAI"
+      id: "Zuntra",
+      role: "AI & Automation Intern (Software Engineering)",
+      company: "Zuntra Digital Private Limited",
+      duration: "Sep 2025 – Apr 2026",
+      bullets: [
+        "Designed & developed HireMind (Next.js, Neon PostgreSQL) recruitment platform",
+        "Built Vertex AI (Gemini) & RAG pipeline generating interview questions & candidate scoring",
+        "Developed 20+ REST API endpoints for auth, resume parsing, ATS scoring & evaluations",
+        "Delivered 15+ core features across Agile sprints, refining performance & production readiness"
+      ]
     },
     {
-      id: "codesentry",
-      title: "codesentry",
-      subtitle: "Real-time AI Code Security CLI Scanner",
-      description: "CLI scanner catching hardcoded secrets, SQLi, and unsafe deserialization before they commit.",
-      category: "tooling",
-      type: "monitor",
-      metrics: [
-        "Completes commit code scans in under 0.4 seconds",
-        "Flags hardcoded keys, SQLi, and unsafe deserializations",
-        "Bypasses heavy dependencies using pure-Python rules",
-        "Generates drop-in AI prompts for ChatGPT/Claude fixes"
-      ],
-      stack: ["Python", "FastAPI", "CLI", "Static Analysis", "AI prompting"],
-      codeUrl: "https://github.com/JEN-chad/codesentry",
-      demoUrl: "https://github.com/JEN-chad/codesentry"
+      id: "Panimalar",
+      role: "B.Tech in AI & Data Science (CGPA: 8.75/10)",
+      company: "Panimalar Engineering College",
+      duration: "2023 – 2027",
+      bullets: [
+        "Current Academic CGPA: 8.75 / 10",
+        "Winner – College Ideathon (Team Leader, AI-driven solution)",
+        "Master of Ceremonies (MC), College Club (300+ students)",
+        "Core DSA: LeetCode (150+) & TakeUForward (200+)"
+      ]
     },
     {
-      id: "oncoenv",
-      title: "OncoEnv",
-      subtitle: "Bioinformatics RL Agent Environment",
-      description: "A procedural biological world state generator designed to train and benchmark autonomous science LLM agents.",
-      category: "ai",
-      type: "dossier",
-      metrics: [
-        "Simulates scRNA-seq count matrices & regulatory networks",
-        "Features 40+ simulated tools (QC, clustering, markers)",
-        "Implements dense stepwise biological reward functions",
-        "Enables hyper-fast training loops built on numpy/scipy"
-      ],
-      stack: ["Python", "FastAPI", "Uvicorn", "Pydantic", "NumPy", "SciPy", "OpenEnv"],
-      codeUrl: "https://github.com/JEN-chad/OncoEnv",
-      demoUrl: "https://github.com/JEN-chad/OncoEnv"
-    },
-    {
-      id: "vault",
-      title: "Crack The Vault",
-      subtitle: "LLM Prompt Injection Security Game",
-      description: "Interactive cyberpunk sandbox challenging players to trick an AI guard into releasing college symposium funds.",
-      category: "ai",
-      type: "sandbox",
-      metrics: [
-        "Leverages a dynamic safety threshold rising as players win",
-        "Features real-time policy engine scoring & injection guards",
-        "Includes a fully populated 3D admin monitor dashboard",
-        "Ensures complete prompt safety isolation via isolated gateways"
-      ],
-      stack: ["FastAPI", "Next.js", "Expo Mobile", "Drizzle ORM", "Neon Postgres", "Docker"],
-      codeUrl: "https://github.com/JEN-chad/Crack-The-Vault",
-      demoUrl: "https://github.com/JEN-chad/Crack-The-Vault"
-    },
-    {
-      id: "devflow",
-      title: "DevFlow",
-      subtitle: "GitHub Integrated Sprint Workspace",
-      description: "SaaS project manager merging Agile boards with real-time GitHub webhook sync loops.",
-      category: "web",
-      type: "dossier",
-      metrics: [
-        "Syncs commits, PRs, and issues directly to board tickets",
-        "Maintains multi-client rooms using Socket.io synchronization",
-        "Provides sprint burndown velocity and cycle time tracking",
-        "Features a buttery-smooth drag-and-drop kanban grid"
-      ],
-      stack: ["MongoDB", "Express", "React", "Node.js", "Socket.io", "Tailwind CSS"],
-      codeUrl: "https://github.com/JEN-chad/DevFlow",
-      demoUrl: "https://github.com/JEN-chad/DevFlow"
-    },
-    {
-      id: "collabboard",
-      title: "CollabBoard",
-      subtitle: "Real-Time Kanban Workspace",
-      description: "Real-time task board built with optimistic client updates and conflict resolution protocols.",
-      category: "web",
-      type: "dossier",
-      metrics: [
-        "Maintains real-time board collaboration over WebSockets",
-        "Handles write collisions through version conflict checkers",
-        "Features optimistic updates on clients for near-zero lag",
-        "Includes user audit logs detailing historical board events"
-      ],
-      stack: ["React", "Vite", "Tailwind CSS", "Socket.io", "Express", "MongoDB"],
-      codeUrl: "https://github.com/JEN-chad/CollabBoard",
-      demoUrl: "https://github.com/JEN-chad/CollabBoard"
-    },
-    {
-      id: "supportdesk",
-      title: "SupportDesk",
-      subtitle: "Multi-Tenant Support Ticketing Platform",
-      description: "Enterprise Zendesk clone featuring strict query-level customer workspace isolation.",
-      category: "web",
-      type: "dossier",
-      metrics: [
-        "Guarantees multi-tenant database isolation boundaries",
-        "Supports workspace invitations and collaborative tickets",
-        "Displays real-time support team performance analytics",
-        "Maintains swift UI states using TanStack Query caching"
-      ],
-      stack: ["React", "Tailwind CSS", "React Query", "Node.js", "Express", "MongoDB"],
-      codeUrl: "https://github.com/JEN-chad/SupportDesk",
-      demoUrl: "https://github.com/JEN-chad/SupportDesk"
+      id: "Certifications",
+      role: "Certifications & Industry Credentials",
+      company: "Oracle, Infosys, GFG & Anthropic",
+      duration: "2024 – 2025",
+      bullets: [
+        "Oracle Cloud Infrastructure 2025 Certified DevOps Professional",
+        "Oracle Cloud Infrastructure 2024 Generative AI Certified Professional",
+        "Oracle Data Platform 2025 Certified Foundations Associate",
+        "GUVI Oracle SQL, GFG Full Stack Development & Anthropic AI Fluency"
+      ]
     }
   ];
+
+  // 7 Projects list sourced from @/data/projects
 
   const selectedProject = projects.find(p => p.id === selectedProjectId) || projects[0];
 
   const diskSkills: Record<string, string[]> = {
-    languages: ["TypeScript", "JavaScript", "Python", "SQL", "HTML5 & CSS3", "Bash Scripting"],
-    frontend: ["Next.js", "React.js", "Tailwind CSS", "Expo Mobile", "TanStack Query", "Framer Motion", "Shadcn UI"],
-    backend: ["Node.js", "Express.js", "FastAPI (Python)", "Socket.io (WebSockets)", "Drizzle ORM", "Mongoose ODM", "MongoDB", "PostgreSQL (Neon)", "Redis"],
-    tools: ["Docker", "Git / GitHub", "GitHub Webhooks & OAuth", "NumPy & SciPy", "Google Gemini & Vertex AI", "Resend Mailer", "Nginx"]
+    languages: ["JavaScript (ES6+)", "Python", "Java", "SQL", "TypeScript", "HTML5 & CSS3"],
+    frontend: ["React.js", "Next.js", "Tailwind CSS", "Expo Mobile", "TanStack Query", "Framer Motion", "Shadcn UI"],
+    backend: ["Node.js", "Express.js", "FastAPI (Python)", "Socket.io (WebSockets)", "Drizzle ORM", "Mongoose ODM", "MongoDB", "PostgreSQL (Neon)"],
+    tools: ["Oracle Cloud (OCI)", "GCP (Vertex AI)", "Docker", "Docker Compose", "Git / GitHub", "Postman", "Vercel", "Render", "Firebase"]
   };
 
   const handleLoadDisk = (diskId: string) => {
@@ -341,16 +219,20 @@ const experiences = [
       <AnimatePresence>
         {!isBookOpen && (
           <>
-            {/* Left Blueprint Sticker */}
+            {/* Left Manifesto Sticky Note */}
             <motion.div
               initial={{ opacity: 0, x: -50, rotate: -12 }}
-              animate={{ opacity: 0.8, x: 0, rotate: -8 }}
+              animate={{ opacity: 0.8, x: 0, rotate: -6 }}
               exit={{ opacity: 0, x: -80, transition: { duration: 0.3 } }}
-              className="absolute left-[2%] lg:left-[8%] xl:left-[12%] top-[12%] w-44 h-44 bg-[#fced88] p-5 shadow-lg rotate-[-8deg] font-hand-kalam text-slate-800 border border-yellow-300 rounded-sm pointer-events-none hidden md:block"
+              className="absolute left-[2%] lg:left-[8%] xl:left-[12%] top-[14%] w-44 h-44 bg-[#fcf5b2] p-5 shadow-md rotate-[-6deg] font-hand-kalam text-slate-800 border border-yellow-300 rounded-sm pointer-events-none hidden md:block z-10"
             >
-              <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-12 h-5 bg-white/40 shadow-sm rounded-sm" />
-              <p className="font-bold border-b border-slate-400/50 pb-1 mb-2">💡 manifesto:</p>
-              <p className="text-xs leading-normal">"I only build tools that solve practical bottlenecks & friction points."</p>
+              <div className="absolute -top-2.5 left-1/2 -translate-x-1/2 w-14 h-4 bg-white/40 shadow-sm border border-slate-400/5 rotate-[-1deg]" />
+              <p className="font-bold border-b border-slate-400/30 pb-0.5 mb-2 text-xs uppercase tracking-wider text-slate-700">manifesto:</p>
+              <div className="text-xs space-y-1 mt-2 text-slate-800 font-semibold leading-relaxed">
+                <p>build useful things.</p>
+                <p>solve real friction.</p>
+                <p>iterate often.</p>
+              </div>
             </motion.div>
 
             {/* Right Desk Coffee Mug */}
@@ -414,72 +296,127 @@ const experiences = [
                 {/* Bottom strap band */}
                 <div className="w-4 h-16 rounded-sm shadow-md" style={{ background: "linear-gradient(to right, #6b4c35, #8B6340, #6b4c35)", border: "1px solid #4a2f1c" }} />
               </motion.div>
-            <motion.div
-              key="closed-cover"
-              initial={{ rotateY: 0, opacity: 0, scale: 0.95 }}
-              animate={isUnlocking 
-                ? { rotateY: -10, rotateX: 2, scale: 0.98 }
-                : coverShakeControls}
-              exit={{ 
-                rotateY: -110, 
-                opacity: 0, 
-                scale: 0.9, 
-                x: "-30%",
-                transition: { duration: 0.7, ease: [0.25, 1, 0.5, 1] } 
-              }}
-              whileHover={isUnlocking || bookLocked ? {} : { 
-                scale: 1.04, 
-                rotate: 0.5, 
-                y: -10, 
-                boxShadow: "0 35px 70px rgba(0,0,0,0.6)" 
-              }}
-              onClick={bookLocked ? handleLockedCoverClick : handleOpenBook}
-              style={{ transformOrigin: "left center", cursor: bookLocked ? "not-allowed" : "pointer" }}
-              className="w-full max-w-[500px] h-[600px] bg-[#221c18] border-[12px] border-[#13100e] rounded-l-md rounded-r-3xl shadow-2xl flex flex-col justify-between p-8 text-center transition-shadow duration-300 relative group"
-            >
-              <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_30%,rgba(0,0,0,0.4))] pointer-events-none" />
-              <div className="absolute left-0 top-0 bottom-0 w-8 bg-[#13100e] border-r-2 border-[#ff5a46]/20 shadow-inner" />
+              <motion.div
+                key="closed-cover"
+                initial={{ rotateY: 0, opacity: 0, scale: 0.95 }}
+                animate={isUnlocking 
+                  ? { rotateY: -10, rotateX: 2, scale: 0.98 }
+                  : coverShakeControls}
+                exit={{ 
+                  rotateY: -110, 
+                  opacity: 0, 
+                  scale: 0.9, 
+                  x: "-30%",
+                  transition: { duration: 0.7, ease: [0.25, 1, 0.5, 1] } 
+                }}
+                whileHover={isUnlocking || bookLocked ? {} : { 
+                  scale: 1.04, 
+                  rotate: 0.5, 
+                  y: -10, 
+                  boxShadow: "0 35px 70px rgba(0,0,0,0.6)" 
+                }}
+                onClick={bookLocked ? handleLockedCoverClick : handleOpenBook}
+                style={{ transformOrigin: "left center", cursor: bookLocked ? "not-allowed" : "pointer" }}
+                className="w-full max-w-[500px] h-[600px] bg-[#221c18] border-[12px] border-[#13100e] rounded-l-md rounded-r-3xl shadow-2xl flex flex-col justify-between p-8 text-center transition-shadow duration-300 relative group"
+              >
+                <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_30%,rgba(0,0,0,0.4))] pointer-events-none" />
+                
+                {/* Vertical red spine line */}
+                <div className="absolute left-[36px] top-0 bottom-0 w-[1.5px] bg-[#d35442]/30 pointer-events-none" />
 
-              {/* Cover Sticker */}
-              <div className="mt-16 bg-[#fcfbe3] p-6 border-4 border-dashed border-[#d35442]/60 rounded-xl rotate-[-2deg] shadow-lg max-w-[360px] mx-auto relative group-hover:rotate-[1deg] transition-transform duration-300">
-                <h1 className="text-4xl sm:text-5xl font-marker text-[#d35442] mb-2">Jenish J</h1>
-                <p className="font-hand-kalam text-xl text-slate-800 font-bold border-t border-[#d35442]/20 pt-2 uppercase tracking-wide">
-                  inventor's logbook
-                </p>
-                <div className="absolute -top-3 -left-3 text-3xl">⚙️</div>
-                <div className="absolute -bottom-3 -right-3 text-3xl">🔋</div>
-              </div>
-
-              {/* Tape Sticker */}
-              <div className="tape w-32 h-6 rotate-[6deg] mx-auto mt-6 z-10 text-[10px] font-mono text-slate-900 font-bold flex items-center justify-center bg-white/90 shadow-sm">
-                SYSTEM LAB FILE
-              </div>
-
-              <div className="mb-10 text-cream-light space-y-4">
-                <motion.p 
-                  animate={{ scale: [1, 1.04, 1], opacity: [0.8, 1, 0.8] }}
-                  transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-                  className="font-hand-kalam text-xl"
-                  style={{ color: "#f6c860", textShadow: "0 0 12px rgba(246,200,96,0.3)" }}
-                >
-                  {bookLocked ? "use the key to unlock ✦" : "tap to open ⚙️"}
-                </motion.p>
-                <div className="flex justify-center items-center gap-1 font-hand-kalam text-sm select-none" style={{ color: "rgba(230,207,162,0.55)" }}>
-                  <span>( {bookLocked ? "find the key" : "initialize"}</span>
-                  <motion.span animate={{ x: [0, 4, 0] }} transition={{ duration: 1, repeat: Infinity }}>➔</motion.span>
-                  <span>)</span>
+                {/* Silver Paperclip */}
+                <div className="absolute left-6 top-28 z-10 w-6 h-12 rotate-[-5deg] pointer-events-none select-none drop-shadow-sm">
+                  <svg viewBox="0 0 24 24" className="w-full h-full stroke-slate-400 fill-none stroke-[2]">
+                    <path d="M6 9v7.5a4.5 4.5 0 0 0 9 0V6a3 3 0 0 0-6 0v8.5a1.5 1.5 0 0 0 3 0V9" />
+                  </svg>
                 </div>
-              </div>
-            </motion.div>
-            {/* Floating Key — only shown while book is locked */}
-            {bookLocked && (
-              <FloatingKey
-                lockRef={lockRef as React.RefObject<HTMLDivElement>}
-                onUnlockComplete={handleUnlockComplete}
-                bookShakeControls={{ shake: handleLockedCoverClick }}
-                bookLocked={bookLocked}
-              />
-            )}
+
+                {/* Subtle Pencil sketches (Braces & Commits) */}
+                <div className="absolute left-12 top-16 w-12 h-12 opacity-[0.15] pointer-events-none select-none text-slate-500">
+                  <svg viewBox="0 0 100 100" className="w-full h-full stroke-current fill-none stroke-[1.5]">
+                    <path d="M 20 20 Q 35 20, 35 35 Q 35 50, 50 50 M 50 50 Q 35 50, 35 65 Q 35 80, 20 80" />
+                    <circle cx="70" cy="35" r="6" />
+                    <circle cx="70" cy="70" r="6" />
+                    <path d="M 70 41 L 70 64" strokeDasharray="3 3" />
+                  </svg>
+                </div>
+
+                {/* Coffee Stain Ring */}
+                <div className="absolute right-10 top-16 w-20 h-20 opacity-20 pointer-events-none select-none">
+                  <svg viewBox="0 0 100 100" className="w-full h-full stroke-[#6b4c35] fill-none stroke-[2]">
+                    <circle cx="50" cy="50" r="42" strokeDasharray="30 20 40 10" />
+                    <circle cx="52" cy="51" r="39" opacity="0.6" strokeDasharray="50 10 10 30" />
+                  </svg>
+                </div>
+
+                {/* Right Side Sketch (frontend -> system -> impact in a box) */}
+                <div className="absolute right-8 top-[170px] w-28 h-28 opacity-25 pointer-events-none select-none text-slate-550">
+                  <svg viewBox="0 0 120 120" className="w-full h-full stroke-current fill-none stroke-[1.2]">
+                    <path d="M 15 20 Q 60 14, 105 20 Q 110 60, 105 100 Q 60 106, 15 100 Q 10 60, 15 20" strokeDasharray="40 2 30 4" />
+                    <path d="M 17 23 Q 60 17, 102 23 Q 107 60, 102 97 Q 60 103, 17 97 Q 12 60, 17 23" opacity="0.4" />
+                    
+                    <text x="60" y="38" textAnchor="middle" fontSize="8" className="font-hand-kalam font-bold fill-current stroke-none">frontend</text>
+                    <path d="M 60 44 L 60 52 M 58 49 L 60 52 L 62 49" />
+                    
+                    <text x="60" y="65" textAnchor="middle" fontSize="8" className="font-hand-kalam font-bold fill-current stroke-none">system</text>
+                    <path d="M 60 71 L 60 79 M 58 76 L 60 79 L 62 76" />
+                    
+                    <text x="60" y="92" textAnchor="middle" fontSize="8" className="font-hand-kalam font-bold fill-current stroke-none">impact</text>
+                  </svg>
+                </div>
+
+                {/* Ideas worth rebuilding notes */}
+                <div className="absolute left-16 bottom-24 font-hand-kalam text-[10px] text-slate-550/30 italic pointer-events-none select-none rotate-[-1deg]">
+                  ideas worth rebuilding...
+                </div>
+
+                {/* Field notes box */}
+                <div className="absolute right-12 bottom-20 border border-dashed border-slate-500/35 rounded p-1.5 font-mono text-[8px] text-slate-550/40 leading-tight text-center pointer-events-none select-none">
+                  <p>FIELD NOTES</p>
+                  <p>2023-2027</p>
+                </div>
+
+                {/* Center Card (Field Notes of an AI Systems Builder) */}
+                <div className="mt-14 bg-[#fcfbe3] px-6 py-6 border border-slate-300 shadow-md max-w-[290px] w-full mx-auto relative rotate-[1.5deg] text-left select-none rounded-sm">
+                  {/* Tape */}
+                  <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 w-16 h-5 bg-white/40 shadow-sm border border-slate-400/5 rotate-[-0.5deg]" />
+                  
+                  <p className="font-hand-kalam text-xs text-[#d35442] font-bold tracking-wider uppercase mb-1.5">JENISH J</p>
+                  
+                  <h1 className="font-hand-kalam text-xl font-bold text-slate-900 leading-snug select-none">
+                    Field Notes of an<br />
+                    AI Systems Builder
+                  </h1>
+                  
+                  <div className="border-t border-slate-400/20 mt-4 pt-2.5 flex justify-between font-mono text-[9px] text-slate-500">
+                    <span>2023 — Present</span>
+                    <span className="text-[#d35442] font-bold uppercase">VOL. 01</span>
+                  </div>
+                </div>
+
+                {/* Bottom text */}
+                <div className="mb-8 text-slate-455/75 space-y-2">
+                  <motion.p 
+                    animate={{ opacity: [0.6, 0.9, 0.6] }}
+                    transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+                    className="font-hand-kalam text-base tracking-wider cursor-pointer"
+                  >
+                    {bookLocked ? "use key to unlock ✦" : "start reading ➔"}
+                  </motion.p>
+                  <div className="text-[10px] font-mono text-slate-500/30 select-none uppercase tracking-widest">
+                    ( click to flip )
+                  </div>
+                </div>
+              </motion.div>
+              {/* Floating Key — only shown while book is locked */}
+              {bookLocked && (
+                <FloatingKey
+                  lockRef={lockRef as React.RefObject<HTMLDivElement>}
+                  onUnlockComplete={handleUnlockComplete}
+                  bookShakeControls={{ shake: handleLockedCoverClick }}
+                  bookLocked={bookLocked}
+                />
+              )}
             </div>
           ) : (
             
@@ -523,66 +460,93 @@ const experiences = [
                           <line x1="100" y1="20" x2="100" y2="100" stroke="#d35442" strokeWidth="1.5" className="opacity-30" />
 
                           {/* Nodes */}
-                          <circle cx="100" cy="20" r="10" fill="#d35442" className="cursor-pointer hover:scale-125 transition-transform" onMouseEnter={() => setActiveBrainNode("manifesto")} />
-                          <circle cx="40" cy="70" r="10" fill="#88c5f7" className="cursor-pointer hover:scale-125 transition-transform" onMouseEnter={() => setActiveBrainNode("friction")} />
+                          <circle cx="100" cy="20" r="10" fill="#d35442" className="cursor-pointer hover:scale-125 transition-transform" onMouseEnter={() => setActiveBrainNode("purpose")} />
+                          <circle cx="40" cy="70" r="10" fill="#88c5f7" className="cursor-pointer hover:scale-125 transition-transform" onMouseEnter={() => setActiveBrainNode("problem")} />
                           <circle cx="160" cy="70" r="10" fill="#a259ff" className="cursor-pointer hover:scale-125 transition-transform" onMouseEnter={() => setActiveBrainNode("ai")} />
-                          <circle cx="100" cy="100" r="10" fill="#fbc67b" className="cursor-pointer hover:scale-125 transition-transform" onMouseEnter={() => setActiveBrainNode("tactile")} />
+                          <circle cx="100" cy="100" r="10" fill="#fbc67b" className="cursor-pointer hover:scale-125 transition-transform" onMouseEnter={() => setActiveBrainNode("systems")} />
 
-                          <text x="100" y="36" textAnchor="middle" fontSize="7" className="font-mono fill-slate-700 font-bold select-none">MANIFESTO</text>
-                          <text x="40" y="86" textAnchor="middle" fontSize="7" className="font-mono fill-slate-700 font-bold select-none">FRICTION</text>
-                          <text x="160" y="86" textAnchor="middle" fontSize="7" className="font-mono fill-slate-700 font-bold select-none">INTELLIGENCE</text>
-                          <text x="100" y="114" textAnchor="middle" fontSize="7" className="font-mono fill-slate-700 font-bold select-none">TACTILE</text>
+                          <text x="100" y="36" textAnchor="middle" fontSize="9" className="font-mono fill-slate-700 font-bold select-none">PURPOSE</text>
+                          <text x="40" y="86" textAnchor="middle" fontSize="9" className="font-mono fill-slate-700 font-bold select-none">PROBLEM</text>
+                          <text x="160" y="86" textAnchor="middle" fontSize="9" className="font-mono fill-slate-700 font-bold select-none">AI</text>
+                          <text x="100" y="114" textAnchor="middle" fontSize="9" className="font-mono fill-slate-700 font-bold select-none">SYSTEMS</text>
                         </svg>
                       </div>
 
                       {/* Display text based on hovered node */}
-                      <div className="bg-white/60 border border-slate-300 rounded p-3 h-[180px] shadow-sm font-hand-kalam text-slate-800 leading-snug flex flex-col justify-center text-center">
-                        {activeBrainNode === "manifesto" && (
-                          <p className="text-sm"><b>MANIFESTO</b>: "I build smart systems that automate tedious bottlenecks so builders can think bigger."</p>
+                      <div className="bg-white/60 border border-slate-300 rounded p-3 h-[100px] shadow-sm font-hand-kalam text-slate-800 leading-snug flex flex-col justify-center text-center">
+                        {activeBrainNode === "purpose" && (
+                          <p className="text-base"><b>PURPOSE</b>: "Build things people actually need"</p>
                         )}
-                        {activeBrainNode === "friction" && (
-                          <p className="text-sm"><b>SOLVE FRICTION</b>: "repetitive work is a bug. codesentry and HireMindAI were built directly to solve developer and hiring pipelines bottlenecks."</p>
+                        {activeBrainNode === "problem" && (
+                          <p className="text-base"><b>PROBLEM</b>: "Understand friction before writing code"</p>
                         )}
                         {activeBrainNode === "ai" && (
-                          <p className="text-sm"><b>AI INTELLIGENCE</b>: "AI models shouldn't reside inside sterile chatbot frames. They must be woven directly into terminal workflows and science sandboxes (OncoEnv)."</p>
+                          <p className="text-base"><b>AI</b>: "Use intelligence to improve workflows"</p>
                         )}
-                        {activeBrainNode === "tactile" && (
-                          <p className="text-sm"><b>TACTILE MECHANICS</b>: "A digital workspace should feel real. Draggable cards, clickable slots, and spinning cassettes are what make code memorable."</p>
+                        {activeBrainNode === "systems" && (
+                          <p className="text-base"><b>SYSTEMS</b>: "Design reliable full-stack solutions"</p>
                         )}
+                      </div>
+
+                      {/* CURRENT CURIOSITIES CHECKLIST */}
+                      <div className="mt-4 pt-3 border-t border-dashed border-slate-350/50 font-hand-kalam text-slate-800 select-none text-left">
+                        <p className="text-[13px] font-bold uppercase tracking-wider text-[#d35442] mb-2 font-mono">□ CURRENT CURIOSITIES</p>
+                        <div className="grid grid-cols-2 gap-x-4 gap-y-2 text-sm pl-1 font-semibold text-slate-800">
+                          <p>□ AI Agents</p>
+                          <p>□ Realtime Systems</p>
+                          <p>□ Product Engineering</p>
+                          <p>□ System Design</p>
+                          <p className="col-span-2">□ Human Computer Interaction</p>
+                        </div>
                       </div>
                     </div>
                   )}
 
-                  {/* SPREAD 1: Floppy Catalog Box */}
+                  {/* SPREAD 1: Engineer's Toolbox */}
                   {currentPage === 1 && (
                     <div className="space-y-4">
                       <div className="border-b-2 border-dashed border-[#d35442]/20 pb-2">
-                        <h2 className="text-3xl font-marker text-[#d35442] mb-0.5">disk catalog</h2>
-                        <p className="font-hand-kalam text-xs text-slate-800 font-bold uppercase tracking-wider">select a disk to insert in reader</p>
+                        <h2 className="text-3xl font-marker text-[#d35442] mb-0.5">engineer's toolbox</h2>
+                        <p className="font-hand-kalam text-xs text-slate-600 italic">tools collected while building systems — insert a module to inspect</p>
                       </div>
 
-                      {/* Disk catalog list */}
-                      <div className="grid grid-cols-2 gap-4 pt-4">
+                      {/* Disk kit cards */}
+                      <div className="grid grid-cols-2 gap-3 pt-2 pr-6">
                         {[
-                          { id: "languages", label: "Languages", color: "bg-blue-600 border-blue-800" },
-                          { id: "frontend", label: "Frontend", color: "bg-purple-600 border-purple-800" },
-                          { id: "backend", label: "Backend", color: "bg-emerald-600 border-emerald-800" },
-                          { id: "tools", label: "Tools", color: "bg-orange-600 border-orange-800" }
+                          { id: "languages", num: "01", kit: "CODE KIT", sub: "languages & core tools", color: "bg-blue-700 border-blue-900", year: "2023" },
+                          { id: "frontend", num: "02", kit: "INTERFACE KIT", sub: "frontend engineering", color: "bg-purple-700 border-purple-900", year: "2023" },
+                          { id: "backend", num: "03", kit: "SYSTEM KIT", sub: "backend & architecture", color: "bg-emerald-700 border-emerald-900", year: "2024" },
+                          { id: "tools", num: "04", kit: "WORKSHOP KIT", sub: "dev utilities & ops", color: "bg-orange-700 border-orange-900", year: "2024" }
                         ].map(disk => (
-                          <div 
+                          <div
                             key={disk.id}
                             onClick={() => handleLoadDisk(disk.id)}
-                            className={`p-3 rounded border-2 text-white font-mono cursor-pointer flex flex-col justify-between shadow-md hover:-translate-y-1 hover:shadow-lg transition-all select-none ${disk.color}`}
+                            className={`p-3 rounded border-2 text-white font-mono cursor-pointer flex flex-col justify-between shadow-md hover:-translate-y-1 hover:shadow-lg transition-all select-none relative overflow-hidden ${
+                              loadedDisk === disk.id ? `${disk.color} ring-2 ring-white/40` : disk.color
+                            }`}
                           >
                             <div className="flex justify-between items-start">
-                              <div className="w-5 h-5 bg-white rounded-sm flex items-center justify-center shadow-inner">
+                              <div className="w-5 h-5 bg-white rounded-sm flex items-center justify-center shadow-inner flex-shrink-0">
                                 <div className="w-3.5 h-3.5 bg-slate-200 border-t border-slate-400" />
                               </div>
-                              <span className="text-[7.5px] border border-white/30 px-1 rounded uppercase tracking-wider font-bold">3.5" HD</span>
+                              <span className="text-[7px] border border-white/30 px-1 rounded uppercase tracking-wider font-bold">3.5" HD</span>
                             </div>
-                            <p className="text-xs font-bold border-t border-white/20 mt-4 pt-1 uppercase tracking-wide">{disk.label}</p>
+                            <div className="mt-3 border-t border-white/20 pt-1.5">
+                              <p className="text-[8px] text-white/60 font-bold tracking-widest uppercase">DISK {disk.num}</p>
+                              <p className="text-xs font-bold uppercase tracking-wide leading-tight">{disk.kit}</p>
+                              <p className="text-[8px] text-white/60 italic mt-0.5 font-hand-kalam normal-case tracking-normal">{disk.sub}</p>
+                              <p className="text-[7px] text-white/40 font-hand-kalam mt-1 italic">collected: {disk.year}</p>
+                            </div>
+                            {loadedDisk === disk.id && (
+                              <div className="absolute top-1.5 right-1.5 w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse shadow" />
+                            )}
                           </div>
                         ))}
+                      </div>
+
+                      {/* Handwritten desk note */}
+                      <div className="pt-1 font-hand-kalam text-[10px] text-slate-400/70 italic text-right pr-1">
+                        "tools change, problem-solving stays."
                       </div>
                     </div>
                   )}
@@ -590,28 +554,67 @@ const experiences = [
                   {/* SPREAD 2: Project Cassettes */}
                   {currentPage === 2 && (
                     <div className="space-y-3">
-                      <h2 className="text-3xl font-marker text-[#d35442] border-b-2 border-dashed border-[#d35442]/20 pb-1.5 select-none">
-                        project deck
-                      </h2>
+                      <div className="flex items-center justify-between border-b-2 border-dashed border-[#d35442]/20 pb-1 select-none">
+                        <h2 className="text-3xl font-marker text-[#d35442]">
+                          project deck
+                        </h2>
+                        <span className="font-hand-kalam text-xs text-slate-600 font-bold">
+                          {filteredProjects.length} / {projects.length} builds
+                        </span>
+                      </div>
+
+                      {/* Domain Category Filter Chips */}
+                      <div className="flex items-center gap-2 pt-0.5 select-none flex-wrap">
+                        {[
+                          { id: "all", label: `ALL (${projects.length})` },
+                          { id: "ai", label: `AI & AGENTS (${projects.filter(p => p.category === "ai").length})` },
+                          { id: "sde", label: `SDE & SYSTEMS (${projects.filter(p => p.category !== "ai").length})` },
+                        ].map((tab) => (
+                          <button
+                            key={tab.id}
+                            onClick={() => setProjectFilter(tab.id as "all" | "ai" | "sde")}
+                            className={`font-hand-kalam text-xs px-3 py-1 rounded-full border transition-all cursor-pointer ${
+                              projectFilter === tab.id
+                                ? "bg-[#d35442] text-white border-[#b83b2a] font-bold shadow-sm"
+                                : "bg-[#e7d7c1]/50 text-slate-800 border-slate-400/40 hover:bg-[#e7d7c1] hover:border-slate-500"
+                            }`}
+                          >
+                            {tab.label}
+                          </button>
+                        ))}
+                      </div>
+
                       <p className="font-hand-kalam text-xs text-slate-600 mb-1 select-none">select a cassette to spin in the deck:</p>
 
-                      <div className="space-y-1.5 max-h-[380px] overflow-y-auto pr-1">
-                        {projects.map((project, idx) => {
+                      <div className="space-y-1.5 max-h-[330px] overflow-y-auto pr-1">
+                        {filteredProjects.map((project, idx) => {
                           const isSelected = selectedProjectId === project.id;
+                          const isAi = project.category === "ai";
                           return (
                             <div
                               key={project.id}
                               onClick={() => handleSelectProject(project.id)}
-                              className={`p-2.5 rounded border border-slate-300 shadow-sm cursor-pointer select-none font-mono flex items-center gap-3 transition-colors ${
+                              className={`p-2.5 rounded border border-slate-300 shadow-sm cursor-pointer select-none font-mono flex items-center justify-between transition-colors ${
                                 isSelected ? "bg-[#e7d7c1] border-[#d35442] text-slate-800 font-bold" : "bg-white/60 hover:bg-[#e7d7c1]/20 text-slate-700"
                               }`}
                             >
-                              {/* Small Cassette outline */}
-                              <div className="w-9 h-5 border border-slate-600 rounded bg-slate-900 flex justify-around items-center px-1">
-                                <div className="w-1.5 h-1.5 rounded-full bg-slate-400 border border-slate-600" />
-                                <div className="w-1.5 h-1.5 rounded-full bg-slate-400 border border-slate-600" />
+                              <div className="flex items-center gap-2.5 min-w-0">
+                                {/* Small Cassette outline */}
+                                <div className="w-8 h-4.5 border border-slate-600 rounded bg-slate-900 flex justify-around items-center px-1 shrink-0">
+                                  <div className="w-1.5 h-1.5 rounded-full bg-slate-400 border border-slate-600" />
+                                  <div className="w-1.5 h-1.5 rounded-full bg-slate-400 border border-slate-600" />
+                                </div>
+                                <span className="text-xs leading-none truncate">{idx + 1}. {project.title}</span>
                               </div>
-                              <span className="text-xs leading-none">{idx + 1}. {project.title}</span>
+
+                              {/* Role Domain Badge */}
+                              <span className={`text-[10px] px-2 py-0.5 rounded font-hand-kalam font-bold uppercase tracking-wider shrink-0 ${
+                                isAi 
+                                  ? "bg-[#d35442]/10 text-[#a53b2b] border border-[#d35442]/30" 
+                                  : "bg-slate-700/10 text-slate-800 border border-slate-700/30"
+                              }`}>
+                                {isAi ? "AI AGENT" : "SDE CORE"}
+                              </span>
                             </div>
                           );
                         })}
@@ -696,40 +699,92 @@ const experiences = [
               </div>
 
               {/* ================= RIGHT PAGE ================= */}
-              <div className="md:col-span-7 bg-[#fcfdf2] rounded-r-2xl p-6 sm:p-8 relative paper-texture transition-all duration-300 border-r-2 border-slate-300 min-h-[580px] flex flex-col justify-between">
+              <div className="md:col-span-7 bg-[#fcf9d6] rounded-r-2xl p-6 sm:p-8 relative paper-texture transition-all duration-300 border-r-2 border-slate-300 min-h-[580px] flex flex-col justify-between">
                 
                 <div className="flex-1 flex flex-col justify-center">
                   
                   {/* SPREAD 0: Manifesto Details */}
+                  {/* SPREAD 0: Builder Notes */}
                   {currentPage === 0 && (
-                    <div className="space-y-4 font-hand-kalam text-slate-800 relative">
-                      <h3 className="text-3xl font-marker text-[#d35442] border-b pb-1 select-none">my manifesto</h3>
+                    <div className="space-y-4 font-hand-kalam text-slate-800 relative select-none">
+                      <h3 className="text-3xl font-marker text-[#d35442] border-b pb-1 select-none">BUILDER NOTES</h3>
                       
-                      <div className="space-y-3 text-sm leading-relaxed">
-                        <p>
-                          I don't just write code; I design systems that take over the repetitive parts of my day so I can spend more time thinking about new ideas.
-                        </p>
-                        
-                        <div className="p-3 bg-white/40 border rounded shadow-sm">
-                          <p className="font-bold text-[#d35442] text-sm">1. Solve Real Friction 🛠:</p>
-                          <p className="text-slate-700 mt-1 pl-2 border-l border-slate-400">
-                            I only build tools that solve practical bottlenecks (e.g. <b>codesentry</b> scanning AI code for leaks, <b>HireMindAI</b> automating ATS workflows).
+                      <p className="text-sm text-slate-500 italic mb-4 leading-relaxed">
+                        "Notes collected from building, breaking,<br className='hidden' /> debugging and rebuilding systems."
+                      </p>
+
+                      <div className="space-y-4 relative pr-2">
+                        {/* Note 01 */}
+                        <div className="p-4 bg-white border border-slate-200/80 rounded shadow-sm relative rotate-[-0.5deg] max-w-[420px] transition-transform hover:scale-[1.01]">
+                          <div className="absolute -top-2 left-6 w-14 h-4 bg-white/40 border border-slate-400/5 shadow-sm rotate-[1.5deg] pointer-events-none" />
+                          <p className="font-mono text-[11px] text-[#d35442] font-bold tracking-wider mb-2 uppercase">NOTE 01 / SOLVE REAL FRICTION</p>
+                          <p className="text-sm font-semibold text-slate-800 leading-relaxed">
+                            Observation:
                           </p>
+                          <p className="text-sm font-normal text-slate-700 leading-relaxed">
+                            People don't need more features.<br />They need fewer problems.
+                          </p>
+                          <div className="mt-2 flex gap-3 text-xs text-slate-500 font-mono">
+                            <span className="font-bold">Built from:</span>
+                            <span>→ HireMindAI</span>
+                            <span>→ CodeSentry</span>
+                          </div>
+                          
+                          {/* Annotation 1 */}
+                          <div className="absolute right-[-45px] top-[14px] font-hand-kalam text-[11px] text-slate-500/75 italic rotate-[6deg] pointer-events-none hidden lg:block whitespace-nowrap">
+                            learned while building HireMind ➔
+                          </div>
                         </div>
 
-                        <div className="p-3 bg-white/40 border rounded shadow-sm">
-                          <p className="font-bold text-[#d35442] text-sm">2. Tactile Feedback 🖱:</p>
-                          <p className="text-slate-700 mt-1 pl-2 border-l border-slate-400">
-                            A portfolio should feel like exploring someone's desk. If it doesn't click, hover, or react with physical intent, it's not finished.
+                        {/* Note 02 */}
+                        <div className="p-4 bg-white border border-slate-200/80 rounded shadow-sm relative rotate-[1deg] max-w-[420px] transition-transform hover:scale-[1.01]">
+                          <div className="absolute -top-2 right-12 w-14 h-4 bg-white/40 border border-slate-400/5 shadow-sm rotate-[-1deg] pointer-events-none" />
+                          
+                          {/* Annotation 2 */}
+                          <div className="absolute left-[-55px] top-[12px] font-hand-kalam text-[11px] text-slate-500/75 italic rotate-[-12deg] pointer-events-none hidden lg:block whitespace-nowrap">
+                            ➔ UX matters :)
+                          </div>
+
+                          <p className="font-mono text-[11px] text-[#d35442] font-bold tracking-wider mb-2 uppercase">NOTE 02 / BUILD FOR HUMANS</p>
+                          <p className="text-sm font-semibold text-slate-800 leading-relaxed">
+                            Observation:
                           </p>
+                          <p className="text-sm font-normal text-slate-700 leading-relaxed">
+                            Good software should feel natural,<br />not complicated.
+                          </p>
+                          <div className="mt-2 flex gap-3 text-xs text-slate-500 font-mono">
+                            <span className="font-bold">Focus:</span>
+                            <span>→ Clean interfaces</span>
+                            <span>→ Smooth workflows</span>
+                          </div>
                         </div>
 
-                        <div className="p-3 bg-white/40 border rounded shadow-sm">
-                          <p className="font-bold text-[#d35442] text-sm">3. Human-Centric AI 🧠:</p>
-                          <p className="text-slate-700 mt-1 pl-2 border-l border-slate-400">
-                            AI shouldn't be a generic chat box. It should be a workspace companion integrated directly into developer tools.
+                        {/* Note 03 */}
+                        <div className="p-4 bg-white border border-slate-200/80 rounded shadow-sm relative rotate-[-1deg] max-w-[420px] transition-transform hover:scale-[1.01]">
+                          <div className="absolute -top-2 left-10 w-14 h-4 bg-white/40 border border-slate-400/5 shadow-sm rotate-[2deg] pointer-events-none" />
+                          <p className="font-mono text-[11px] text-[#d35442] font-bold tracking-wider mb-2 uppercase">NOTE 03 / AI AS A TOOL</p>
+                          <p className="text-sm font-semibold text-slate-800 leading-relaxed">
+                            Observation:
                           </p>
+                          <p className="text-sm font-normal text-slate-700 leading-relaxed">
+                            AI should remove repetitive work,<br />so humans focus on better decisions.
+                          </p>
+                          <div className="mt-2 flex gap-3 text-xs text-slate-500 font-mono">
+                            <span className="font-bold">Exploring:</span>
+                            <span>→ AI Agents</span>
+                            <span>→ Automation</span>
+                          </div>
+
+                          {/* Annotation 3 */}
+                          <div className="absolute right-[-45px] top-[14px] font-hand-kalam text-[11px] text-slate-500/75 italic rotate-[8deg] pointer-events-none hidden lg:block whitespace-nowrap">
+                            current obsession: agents ➔
+                          </div>
                         </div>
+                      </div>
+
+                      {/* Small handwritten footer */}
+                      <div className="text-center pt-3 font-hand-kalam text-xs text-slate-400/75 italic select-none">
+                        "still learning, still shipping."
                       </div>
 
                       {/* Draggable Sticky note for human touch */}
@@ -739,7 +794,7 @@ const experiences = [
                         dragElastic={0.15}
                         whileDrag={{ scale: 1.05, zIndex: 100 }}
                         whileHover={{ rotate: 1, scale: 1.02 }}
-                        className="absolute bottom-[-20px] right-[-10px] w-40 bg-[#fced88] border border-yellow-300 p-3 shadow-md rounded rotate-[-4deg] cursor-grab active:cursor-grabbing text-slate-800 text-[10px] leading-tight select-none hidden sm:block z-30"
+                        className="absolute bottom-[-15px] right-[-15px] w-40 bg-[#fced88] border border-yellow-300 p-3 shadow-md rounded rotate-[-4deg] cursor-grab active:cursor-grabbing text-slate-800 text-[10px] leading-tight select-none hidden xl:block z-30"
                       >
                         <div className="absolute -top-2 left-1/2 -translate-x-1/2 w-8 h-3.5 bg-white/40 shadow-sm" />
                         <p className="font-bold border-b border-slate-400/50 pb-0.5 mb-1.5 uppercase text-[8px] text-[#d35442]">desk log 📝</p>
@@ -751,66 +806,108 @@ const experiences = [
                     </div>
                   )}
 
-                  {/* SPREAD 1: Floppy Disk Reader Interface */}
+                  {/* SPREAD 1: Workbench Scanner */}
                   {currentPage === 1 && (
-                    <div className="space-y-6">
-                      
+                    <div className="space-y-4">
+
                       {/* Floppy Reader Slot */}
-                      <div className="bg-slate-700 rounded-lg p-5 border-b-4 border-r-4 border-slate-800 shadow-md relative max-w-[420px] mx-auto select-none">
-                        <div className="h-4 bg-slate-900 rounded border-2 border-slate-600 shadow-inner relative flex items-center px-4 overflow-hidden mb-3">
+                      <div className="bg-slate-700 rounded-lg p-4 border-b-4 border-r-4 border-slate-800 shadow-md relative max-w-[420px] mx-auto select-none">
+                        <div className="h-4 bg-slate-900 rounded border-2 border-slate-600 shadow-inner relative flex items-center px-4 overflow-hidden mb-2">
                           <AnimatePresence>
                             {diskLoadingState === "loading" && (
-                              <motion.div 
-                                className="h-full bg-blue-500" 
-                                initial={{ width: 0 }} 
-                                animate={{ width: "100%" }} 
+                              <motion.div
+                                className="h-full bg-amber-500"
+                                initial={{ width: 0 }}
+                                animate={{ width: "100%" }}
                                 exit={{ opacity: 0 }}
                                 transition={{ duration: 1 }}
                               />
                             )}
                           </AnimatePresence>
-                          <span className="absolute right-4 top-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-red-600 shadow animate-pulse" />
+                          <span className={`absolute right-4 top-1/2 -translate-y-1/2 w-2 h-2 rounded-full shadow animate-pulse ${
+                            diskLoadingState === "loaded" ? "bg-green-400" : "bg-red-600"
+                          }`} />
                         </div>
-                        <p className="font-mono text-[9px] text-slate-400 uppercase tracking-widest text-right">3.5" Floppy Disk Reader Slot</p>
+                        <div className="flex justify-between items-center">
+                          <p className="font-mono text-[8px] text-slate-400 uppercase tracking-widest">3.5" Module Reader</p>
+                          <p className="font-hand-kalam text-[8px] text-slate-500 italic">Property of: Jenish's Workshop</p>
+                        </div>
                       </div>
 
-                      {/* Display Screen */}
-                      <div className="bg-black rounded-lg p-4 h-[240px] border-4 border-slate-800 shadow-inner font-mono text-xs text-[#4ade80] max-w-[420px] mx-auto flex flex-col justify-between relative overflow-hidden select-text">
+                      {/* Workbench Display Screen */}
+                      <div className="bg-[#0d1117] rounded-lg p-4 border-4 border-slate-800 shadow-inner font-mono text-xs max-w-[420px] mx-auto flex flex-col justify-between relative overflow-hidden select-text" style={{ minHeight: '240px' }}>
                         <div className="screen-glare absolute inset-0 z-10 pointer-events-none" />
-                        
+
                         <div className="relative z-20 space-y-2">
                           {diskLoadingState === "idle" && (
-                            <p className="text-slate-500 animate-pulse text-center mt-16">INSERT A FLOPPY DISK TO BOOT DIAGNOSTIC REPORT...</p>
-                          )}
-                          
-                          {diskLoadingState === "loading" && (
-                            <div className="space-y-1">
-                              <p>BOOT DIAGNOSTICS: INITIALIZING...</p>
-                              <p>MOUNTING DRIVE: OK [3.5" HD]</p>
-                              <p className="text-yellow-400">READING FILE BLOCKS... [PLEASE WAIT]</p>
+                            <div className="flex flex-col items-center justify-center h-[200px] gap-2 text-center">
+                              <div className="w-8 h-8 border-2 border-slate-600 rounded flex items-center justify-center">
+                                <div className="w-4 h-4 bg-slate-700 border border-slate-500" />
+                              </div>
+                              <p className="text-slate-500 text-[10px] animate-pulse">insert a disk to scan tools</p>
                             </div>
                           )}
 
-                          {diskLoadingState === "loaded" && loadedDisk && (
-                            <div className="space-y-1.5">
-                              <p className="text-[#a259ff] font-bold">SYSTEM DIAGNOSTIC: {loadedDisk.toUpperCase()} DISK LOADED</p>
-                              <p className="text-slate-400">------------------------------------</p>
-                              {diskSkills[loadedDisk].map((skill, i) => (
-                                <p key={i} className="flex justify-between">
-                                  <span>&gt; {skill}</span>
-                                  <span className="text-cream-light font-bold">ONLINE</span>
-                                </p>
-                              ))}
-                              <p className="text-slate-400">------------------------------------</p>
-                              <p className="text-xs text-yellow-400 font-bold">STATUS: OK [100% READY TO COMPILE]</p>
+                          {diskLoadingState === "loading" && (
+                            <div className="space-y-1 text-amber-400">
+                              <p>WORKBENCH SCANNER</p>
+                              <p className="text-slate-400">Reading disk...</p>
+                              <p className="text-amber-300 animate-pulse">Scanning modules... please wait</p>
                             </div>
                           )}
+
+                          {diskLoadingState === "loaded" && loadedDisk && (() => {
+                            const usageMap: Record<string, { label: string; usedIn: string[] }> = {
+                              languages: {
+                                label: "DAILY USE",
+                                usedIn: ["TypeScript → HireMindAI, Portfolio", "Python → codesentry, OncoEnv", "JavaScript → DevFlow, CollabBoard", "SQL → Neon DB, APIs", "HTML5 & CSS3 → all web projects", "Bash → dev scripts & CI"]
+                              },
+                              frontend: {
+                                label: "DAILY USE",
+                                usedIn: ["Next.js → HireMindAI, Portfolio", "React.js → DevFlow, SupportDesk", "Tailwind CSS → every interface", "Expo → Crack The Vault mobile", "TanStack Query → SupportDesk", "Framer Motion → Portfolio", "Shadcn UI → HireMindAI"]
+                              },
+                              backend: {
+                                label: "DAILY USE",
+                                usedIn: ["Node.js → DevFlow, SupportDesk", "Express.js → API backends", "FastAPI → codesentry, OncoEnv", "Socket.io → CollabBoard, DevFlow", "MongoDB → MERN stack projects", "PostgreSQL → HireMindAI", "Redis → caching layers"]
+                              },
+                              tools: {
+                                label: "EXPLORING",
+                                usedIn: ["Docker → Crack The Vault deploy", "Git / GitHub → all projects", "GitHub Webhooks → DevFlow", "NumPy & SciPy → OncoEnv", "Gemini & Vertex AI → HireMindAI", "Resend → email systems", "Nginx → server deployments"]
+                              }
+                            };
+                            const info = usageMap[loadedDisk];
+                            const statusColor = info.label === "DAILY USE" ? "text-green-400" : info.label === "EXPLORING" ? "text-yellow-400" : "text-blue-400";
+                            return (
+                              <div className="space-y-2">
+                                <div className="flex justify-between items-center border-b border-slate-700 pb-1.5">
+                                  <p className="text-slate-300 font-bold text-[10px] uppercase tracking-wider">WORKBENCH SCANNER</p>
+                                  <span className={`text-[8px] font-bold uppercase tracking-widest border px-1.5 py-0.5 rounded ${
+                                    info.label === "DAILY USE" ? "border-green-700 text-green-400" : "border-yellow-700 text-yellow-400"
+                                  }`}>{info.label}</span>
+                                </div>
+                                <p className="text-slate-500 text-[9px]">Tools discovered:</p>
+                                <div className="space-y-1 max-h-[140px] overflow-y-auto pr-1">
+                                  {info.usedIn.map((line, i) => {
+                                    const [tool, ...rest] = line.split(" → ");
+                                    return (
+                                      <div key={i}>
+                                        <span className="text-[#4ade80]">✓ {tool}</span>
+                                        {rest.length > 0 && (
+                                          <p className="text-slate-500 text-[8px] pl-3">used in: → {rest.join(" → ")}</p>
+                                        )}
+                                      </div>
+                                    );
+                                  })}
+                                </div>
+                              </div>
+                            );
+                          })()}
                         </div>
 
                         {diskLoadingState === "loaded" && (
-                          <div className="text-[8px] text-slate-500 border-t border-slate-800 pt-2 flex justify-between select-none">
-                            <span>Diagnostic v1.42</span>
-                            <span>Jenish J Console</span>
+                          <div className="text-[8px] text-slate-600 border-t border-slate-800 pt-2 flex justify-between select-none mt-2">
+                            <span>toolbox v2</span>
+                            <span>last opened: today</span>
                           </div>
                         )}
                       </div>
